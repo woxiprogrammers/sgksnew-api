@@ -20,7 +20,7 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 Route::group(['prefix' => 'v1'], function() {
 
 	Route::group(['prefix' => 'sgks-member'], function() {
-		Route::get('listing', array('uses' => 'Master\MemberController@listing'));
+		Route::post('listing', array('uses' => 'Master\MemberController@listing'));
 	});
 
 });
