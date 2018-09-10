@@ -27,4 +27,8 @@ Route::group(['prefix' => 'v1'], function() {
 		Route::post('listing', array('uses' => 'Master\EventController@listing'));
 	});
 
+	Route::group(['prefix' => 'sgks-committee'], function() {
+		Route::post('listing', array('uses' => 'Master\CommitteeController@listing'));
+	});
+
 });
