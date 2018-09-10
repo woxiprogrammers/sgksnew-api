@@ -23,4 +23,8 @@ Route::group(['prefix' => 'v1'], function() {
 		Route::post('listing', array('uses' => 'Master\MemberController@listing'));
 	});
 
+	Route::group(['prefix' => 'sgks-event'], function() {
+		Route::post('listing', array('uses' => 'Master\EventController@listing'));
+	});
+
 });
