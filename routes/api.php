@@ -43,5 +43,13 @@ Route::group(['prefix' => 'v1'], function() {
 		Route::post('listing', array('uses' => 'Master\AccountController@listing'));
 	});
 
+	Route::group(['prefix' => 'sgks-public'], function() {
+		Route::get('health-plus', array('uses' => 'Master\WebviewController@healthPlus'));
+		Route::get('privacy-policy', array('uses' => 'Master\WebviewController@privacyPolicy'));
+		Route::get('help', array('uses' => 'Master\WebviewController@help'));
+		Route::get('q-a', array('uses' => 'Master\WebviewController@qa'));
+		Route::get('contact-us', array('uses' => 'Master\WebviewController@contactUs'));
+	});
+
 
 });
