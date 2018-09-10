@@ -39,5 +39,9 @@ Route::group(['prefix' => 'v1'], function() {
 		Route::post('listing', array('uses' => 'Master\ClassifiedController@listing'));
 	});
 
+	Route::group(['prefix' => 'sgks-account'], function() {
+		Route::post('listing', array('uses' => 'Master\AccountController@listing'));
+	});
+
 
 });
