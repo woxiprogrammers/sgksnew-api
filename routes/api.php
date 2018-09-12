@@ -49,6 +49,10 @@ Route::group(['prefix' => 'v1'], function() {
 		Route::get('help', array('uses' => 'Master\WebviewController@help'));
 		Route::get('q-a', array('uses' => 'Master\WebviewController@qa'));
 		Route::get('contact-us', array('uses' => 'Master\WebviewController@contactUs'));
+		Route::get('master-list', array('uses' => 'Master\WebviewController@masterList'));
+		Route::post('addmetosgks', array('uses' => 'Master\WebviewController@addMeToSgks'));
+		Route::post('sgks-suggestion', array('uses' => 'Master\WebviewController@sgksSuggestion'));
+		
 	});
 
 
