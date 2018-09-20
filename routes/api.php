@@ -55,5 +55,9 @@ Route::group(['prefix' => 'v1'], function() {
 		
 	});
 
+    Route::group(['prefix' => 'sgks-offline'], function() {
+        Route::post('local-storage-offline', array('uses' => 'Master\OfflineStorageController@localStorageOffline'));
+    });
+
 
 });
