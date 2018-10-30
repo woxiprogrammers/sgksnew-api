@@ -59,5 +59,12 @@ Route::group(['prefix' => 'v1'], function() {
         Route::post('local-storage-offline', array('uses' => 'Master\OfflineStorageController@localStorageOffline'));
     });
 
+    Route::group(['prefix' => 'sgks-miss'], function() {
+        Route::get('get-city', array('uses' => 'Master\MiscellaneousController@getCity'));
+        Route::get('get-bloodgroups', array('uses' => 'Master\MiscellaneousController@getBloodGroupMaster'));
+        Route::post('get-otp', array('uses' => 'Auth\OtpVerificationController@getOtp'));
+        Route::post('verify-otp', array('uses' => 'Auth\OtpVerificationController@verifyOtp'));
+    });
+
 
 });
