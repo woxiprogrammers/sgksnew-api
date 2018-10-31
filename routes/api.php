@@ -21,6 +21,7 @@ Route::group(['prefix' => 'v1'], function() {
 
 	Route::group(['prefix' => 'sgks-member'], function() {
 		Route::post('listing', array('uses' => 'Master\MemberController@listing'));
+        Route::post('add-member', array('uses' => 'Master\MemberController@addMember'));
 	});
 
 	Route::group(['prefix' => 'sgks-event'], function() {
@@ -64,7 +65,7 @@ Route::group(['prefix' => 'v1'], function() {
         Route::get('get-bloodgroups', array('uses' => 'Master\MiscellaneousController@getBloodGroupMaster'));
         Route::post('get-otp', array('uses' => 'Auth\OtpVerificationController@getOtp'));
         Route::post('verify-otp', array('uses' => 'Auth\OtpVerificationController@verifyOtp'));
+        Route::post('image-upload', array('uses' => 'Master\MiscellaneousController@imageUpload'));
     });
-
 
 });

@@ -3,6 +3,8 @@ namespace App\Http\Controllers\CustomTraits;
 
 use Illuminate\Support\Facades\Log;
 use Illuminate\Http\Request;
+use App\Members;
+use Illuminate\Support\Facades\File;
 
 trait MemberTrait{
 
@@ -365,6 +367,63 @@ trait MemberTrait{
             'message' => $message,
             'data' => $data,
             'page_id' => $page_id
+        ];
+        return response()->json($response,$status);
+    }
+
+    public function addMember(Request $request) {
+        try{
+            $data = $request->all();
+            $membersData['first_name'] = $data['first_name'];
+            $membersData['middle_name'] = $data['middle_name'];
+            $membersData['last_name'] = $data['last_name'];
+            if(array_key_exists('gender',$data)){
+                $membersData['gender'] = $data['gender'];
+            }
+            $membersData['address'] = $data['address'];
+            $membersData['date_of_birth'] = $data['date_of_birth'];
+            $membersData['blood_group_id'] = $data['blood_group_id'];
+            $membersData['mobile'] = $data['mobile'];
+            $membersData['email'] = $data['email'];
+            $membersData['city_id'] = $data['city_id'];
+            $membersData['longitude'] = null; // currently No functionality
+            $membersData['latitude'] = null;
+            $createMember = Members::create($membersData);
+
+            if($request->has('profile_images')){
+                $createMemberDirectoryName = sha1($createMember->id);
+                $tempUploadFile = env('WEB_PUBLIC_PATH').env('MEMBER_TEMP_IMAGE_UPLOAD').$data['profile_images'];
+                if(File::exists($tempUploadFile)){
+                    $imageUploadNewPath = env('WEB_PUBLIC_PATH').env('MEMBER_IMAGE_UPLOAD').DIRECTORY_SEPARATOR.$createMemberDirectoryName;
+                    if(!file_exists($imageUploadNewPath)) {
+                        File::makeDirectory($imageUploadNewPath, $mode = 0777, true, true);
+                    }
+                    $imageUploadNewPath .= DIRECTORY_SEPARATOR.$data['profile_images'];
+                    File::move($tempUploadFile,$imageUploadNewPath);
+                    $createMember->update([
+                        'profile_image' => $data['profile_images'],
+                    ]);
+                }
+            }
+            $message = "Member Added Successfully";
+            $status = 200;
+            $response = [
+                'message' => $message,
+            ];
+            return response()->json($response,$status);
+
+        }catch(\Exception $exception){
+            $message = "Fail";
+            $status = 500;
+            $data = [
+                'action' => 'Member Add',
+                'exception' => $exception->getMessage(),
+                'params' => $request->all()
+            ];
+            Log::critical(json_encode($data));
+        }
+        $response = [
+            'message' => $message,
         ];
         return response()->json($response,$status);
     }
