@@ -17,6 +17,7 @@ trait MemberTrait{
              $page_id = $request->page_id;
              $skip = $page_id * $take;
              $data = array();
+             $ids = array();
              if($request->has('sgks_city')){
                  $ids = Members::where('city_id',$request->sgks_city)
                      ->pluck('id')->toArray();
@@ -29,6 +30,7 @@ trait MemberTrait{
              }
 
              $memberData = Members::whereIn('id', $ids)
+                                    ->where('is_active', true)
                                     ->skip($skip)->take($take)
                                     ->get()->toArray();
 
