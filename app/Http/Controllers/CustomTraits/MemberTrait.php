@@ -14,7 +14,7 @@ trait MemberTrait{
     public function listing(Request $request){
          try{
              $take = 10;
-             $page_id = $request->page_id;
+             $page_id = ($request->page_id-1);
              $skip = $page_id * $take;
              $data = array();
              $ids = array();
@@ -33,6 +33,10 @@ trait MemberTrait{
                                     ->where('is_active', true)
                                     ->skip($skip)->take($take)
                                     ->get()->toArray();
+             if(count($memberData) == 0) {
+                 $page_id = "";
+             }
+
 
              foreach ($memberData as $member) {
                  if ($request->has('language_id')) {
