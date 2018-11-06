@@ -14,7 +14,7 @@ trait MemberTrait{
     public function listing(Request $request){
          try{
              $take = 10;
-             $page_id = ($request->page_id-1);
+             $page_id = ($request->page_id);
              $skip = $page_id * $take;
              $data = array();
              $ids = array();
@@ -35,6 +35,8 @@ trait MemberTrait{
                                     ->get()->toArray();
              if(count($memberData) == 0) {
                  $page_id = "";
+             } else {
+                 $page_id = $page_id + 1;
              }
 
 
