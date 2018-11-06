@@ -69,9 +69,9 @@ class MiscellaneousController extends Controller
             if (!file_exists($tempImageUploadPath)) {
                 File::makeDirectory($tempImageUploadPath, $mode = 0777, true, true);
             }
-            $extension = $request->file('image')->getClientOriginalExtension();
+	    $extension = $request['extension'];
             $filename = mt_rand(1,10000000000).sha1(time()).".{$extension}";
-            $request->file('image')->move($tempImageUploadPath, $filename);
+            file_put_contents($tempImageUploadPath.DIRECTORY_SEPARATOR.$filename,base64_decode($request['image']));
             $message = "Success";
             $status = 200;
         }catch (\Exception $e){
