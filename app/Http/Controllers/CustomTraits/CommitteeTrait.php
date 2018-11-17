@@ -26,8 +26,8 @@ trait CommitteeTrait{
                      if (count($committeeTranslationData) > 0) {
                         $data[] = array(
                             'id' => $committee['id'],
-                            'name' => $committeeTranslationData[0]['committee_name'],
-                            'description' => $committeeTranslationData[0]['description'],
+                            'name' => ($committeeTranslationData[0]['committee_name'] != null) ? $committeeTranslationData[0]['committee_name'] : $committee['committee_name'],
+                            'description' => ($committeeTranslationData[0]['description']) ? ($committeeTranslationData[0]['description']) : $committee['description'],
                             'city' => Cities::where('id', $committee['city_id'])->value('name'),
                             "year"=> "2018",
                             'created_at' => $committee['created_at'],
@@ -116,7 +116,7 @@ trait CommitteeTrait{
             $message = "Fail";
             $status = 500;
             $data = [
-                'action' => 'Get all members',
+                'action' => 'Get all committee & Committee members data',
                 'exception' => $e->getMessage(),
                 'params' => $request->all()
             ];

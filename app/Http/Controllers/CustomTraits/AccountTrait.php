@@ -1,6 +1,9 @@
 <?php
 namespace App\Http\Controllers\CustomTraits;
 
+use App\AccountImages;
+use App\Accounts;
+use App\AccountsTranslations;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Http\Request;
 
@@ -8,63 +11,62 @@ trait AccountTrait{
 
     public function listing(Request $request){
          try{
-             $displayLength = 5;
-             $totalRecords = $request->page_id * $displayLength;
-             $page_id = 1;
-             $data = array(
-                       array(
-                          "id" => 1,
-                          "name" => "Happy BD PQR!",
-                          "account_image_url" => "https://res.cloudinary.com/dwzmsvp7f/image/fetch/q_75,f_auto,w_400/https%3A%2F%2Fmedia.insider.in%2Fimage%2Fupload%2Fc_crop%2Cg_custom%2Fv1519627969%2Fr134laaeo4imjznt4nsw.jpg",
-                        ),array(
-                          "id" => 2,
-                          "name" => "Happy BD PQR!",
-                          "account_image_url" => "https://www.eventfaqs.com/Uploads/News/Content/vow31.jpg",
-                        ),array(
-                          "id" => 3,
-                          "name" => "Happy BD PQR!",
-                          "account_image_url" => "https://res.cloudinary.com/dwzmsvp7f/image/fetch/q_75,f_auto,w_400/https%3A%2F%2Fmedia.insider.in%2Fimage%2Fupload%2Fc_crop%2Cg_custom%2Fv1519627969%2Fr134laaeo4imjznt4nsw.jpg",
-                        ),array(
-                          "id" => 4,
-                          "name" => "Happy BD PQR!",
-                          "account_image_url" => "https://www.eventfaqs.com/Uploads/News/Content/vow31.jpg",
-                        ),array(
-                          "id" => 5,
-                          "name" => "Happy BD PQR!",
-                          "account_image_url" => "https://res.cloudinary.com/dwzmsvp7f/image/fetch/q_75,f_auto,w_400/https%3A%2F%2Fmedia.insider.in%2Fimage%2Fupload%2Fc_crop%2Cg_custom%2Fv1519627969%2Fr134laaeo4imjznt4nsw.jpg",
-                        ),array(
-                          "id" => 6,
-                          "name" => "Happy BD PQR!",
-                          "account_image_url" => "https://res.cloudinary.com/dwzmsvp7f/image/fetch/q_75,f_auto,w_400/https%3A%2F%2Fmedia.insider.in%2Fimage%2Fupload%2Fc_crop%2Cg_custom%2Fv1519627969%2Fr134laaeo4imjznt4nsw.jpg",
-                        ),array(
-                          "id" => 7,
-                          "name" => "Happy BD PQR!",
-                          "account_image_url" => "https://www.eventfaqs.com/Uploads/News/Content/vow31.jpg",
-                        ),array(
-                          "id" => 8,
-                          "name" => "Happy BD PQR!",
-                          "account_image_url" => "https://res.cloudinary.com/dwzmsvp7f/image/fetch/q_75,f_auto,w_400/https%3A%2F%2Fmedia.insider.in%2Fimage%2Fupload%2Fc_crop%2Cg_custom%2Fv1519627969%2Fr134laaeo4imjznt4nsw.jpg",
-                        ),array(
-                          "id" => 9,
-                          "name" => "Happy BD PQR!",
-                          "account_image_url" => "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRAhcP9INehHWSK8ML7ONJaWefGjtrObCdQw3DbXiuZ016TRUw7",
-                        ),array(
-                          "id" => 10,
-                          "name" => "Happy BD PQR!",
-                          "account_image_url" => "https://res.cloudinary.com/dwzmsvp7f/image/fetch/q_75,f_auto,w_400/https%3A%2F%2Fmedia.insider.in%2Fimage%2Fupload%2Fc_crop%2Cg_custom%2Fv1519627969%2Fr134laaeo4imjznt4nsw.jpg",
-                        ),array(
-                          "id" => 11,
-                          "name" => "Happy BD PQR!",
-                          "account_image_url" => "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRAhcP9INehHWSK8ML7ONJaWefGjtrObCdQw3DbXiuZ016TRUw7",
-                        ),
-                      );
+             $data = array();
+             $accountData = Accounts::orderBy('id', 'ASC')
+                 ->get()->toArray(); //all city data
+             $count = 0;
+             foreach ($accountData as $account) {
+                 if ($request->has('language_id')) {
+                     $accountTranslationData = AccountsTranslations::where('language_id', $request->language_id)
+                         ->where('account_id', $account['id'])
+                         ->get()->toArray();
+                     if (count($accountTranslationData) > 0) {
+                         $data[] = array(
+                             'id' => $account['id'],
+                             'name' => ($accountTranslationData[0]['name'] != null) ? $accountTranslationData[0]['name'] : $account['name'],
+                             'description' => ($accountTranslationData[0]['description']) ? $accountTranslationData[0]['description'] : $account['description'],
+                             'created_at' => $account['created_at'],
+                             'updated_at' => $account['updated_at']
+                         );
+                     } else {
+                         $data[] = array(
+                             'id' => $account['id'],
+                             'name' => $account['name'],
+                             'description' => $account['description'],
+                             'created_at' => $account['created_at'],
+                             'updated_at' => $account['updated_at']
+                         );
+                     }
+                 } else {
+                     $data[] = array(
+                         'id' => $account['id'],
+                         'name' => $account['name'],
+                         'description' => $account['description'],
+                         'created_at' => $account['created_at'],
+                         'updated_at' => $account['updated_at']
+                     );
+                 }
+                 $AccountImgData = array();
+                 $accountImageData = AccountImages::where('account_id', $account['id'])
+                     ->orderBy('id', 'ASC')
+                     ->get()->toArray();
+                 foreach ($accountImageData as $accountImage) {
+                     $accImg = null;
+                     $createMemberDirectoryName = sha1($account['id']);
+                     $accImg = env('SGKSWEB_BASEURL') . env('ACCOUNT_IMAGES_UPLOAD') . DIRECTORY_SEPARATOR . $createMemberDirectoryName . DIRECTORY_SEPARATOR . $accountImage['url'];
+                     $AccountImgData[] = $accImg;
+                 }
+                 $data[$count]['accounts_images'] = $AccountImgData;
+                 $count++;
+             }
+
             $message = "Success";
             $status = 200;
         }catch(\Exception $e){
             $message = "Fail";
             $status = 500;
             $data = [
-                'action' => 'Get all members',
+                'action' => 'Get all Accounts data',
                 'exception' => $e->getMessage(),
                 'params' => $request->all()
             ];
@@ -73,7 +75,6 @@ trait AccountTrait{
         $response = [
             'message' => $message,
             'data' => $data,
-            'page_id' => $page_id
         ];
         return response()->json($response,$status);
     }
