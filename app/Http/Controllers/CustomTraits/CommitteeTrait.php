@@ -14,7 +14,9 @@ trait CommitteeTrait{
     public function listing(Request $request){
          try{
              $data = array();
-             $committeeData = Committees::where('is_active',true)->get()->toArray(); //all city data
+             $committeeData = Committees::where('is_active',true)
+                 ->orderBy('id', 'ASC')
+                 ->get()->toArray(); //all city data
              $count = 0;
              foreach ($committeeData as $committee) {
                  if ($request->has('language_id')) {
