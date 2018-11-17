@@ -1,6 +1,11 @@
 <?php
 namespace App\Http\Controllers\CustomTraits;
 
+use App\Cities;
+use App\CommitteeMembers;
+use App\CommitteeMembersTranslations;
+use App\Committees;
+use App\CommitteesTranslations;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Http\Request;
 
@@ -8,102 +13,101 @@ trait CommitteeTrait{
 
     public function listing(Request $request){
          try{
-             $displayLength = 5;
-             $totalRecords = $request->page_id * $displayLength;
-             $page_id = 1;
-             $data = array(
-                       array(
-                           'id'=> 1,
-                            "name" => "SGKS Nari Shakti",
-                            "description" => "",
-                            "city"=> "Pune",
-                            "year"=> "2017",
-                              "members" => array(
-                                  array(
-                                    "fullname"=>"Jinal A",
-                                    "designation"=>"Precident A",
-                                    "member_image"=>"http://www.mocky.io/v2/5b87dba02e0000f81a05fb7d",
-                                    "area"=>"Pune",
-                                    "cont_number"=>"8446185105",
-                                    "email_id"=>"jinal@gmail.com"
-                                  ),array(
-                                    "fullname"=>"Jinal B",
-                                    "designation"=>"Precident B",
-                                    "member_image"=>"http://www.mocky.io/v2/5b87dba02e0000f81a05fb7d",
-                                    "area"=>"Pune",
-                                    "cont_number"=>"8446185105",
-                                    "email_id"=>"jinal@gmail.com"
-                                ),array(
-                                    "fullname"=>"Jinal C",
-                                    "designation"=>"Precident C",
-                                    "member_image"=>"http://www.mocky.io/v2/5b87dba02e0000f81a05fb7d",
-                                    "area"=>"Pune",
-                                    "cont_number"=>"8446185105",
-                                    "email_id"=>"jinal@gmail.com"
-                                )
-                          )
-                        ),array(
-                           'id'=> 2,
-                            "name" => "SGKS Committee 1",
-                            "description" => "",
-                            "city"=> "Pune",
-                            "year"=> "2017",
-                              "members" => array(
-                                  array(
-                                    "fullname"=>"Jinal A1",
-                                    "designation"=>"Precident A1",
-                                    "member_image"=>"http://www.mocky.io/v2/5b87dba02e0000f81a05fb7d",
-                                    "area"=>"Pune",
-                                    "cont_number"=>"8446185105",
-                                    "email_id"=>"jinal@gmail.com"
-                                  ),array(
-                                    "fullname"=>"Jinal B1",
-                                    "designation"=>"Precident B1",
-                                    "member_image"=>"http://www.mocky.io/v2/5b87dba02e0000f81a05fb7d",
-                                    "area"=>"Pune",
-                                    "cont_number"=>"8446185105",
-                                    "email_id"=>"jinal@gmail.com"
-                                ),array(
-                                    "fullname"=>"Jinal C1",
-                                    "designation"=>"Precident C1",
-                                    "member_image"=>"http://www.mocky.io/v2/5b87dba02e0000f81a05fb7d",
-                                    "area"=>"Pune",
-                                    "cont_number"=>"8446185105",
-                                    "email_id"=>"jinal@gmail.com"
-                                )
-                          )
-                        ),array(
-                           'id'=> 3,
-                            "name" => "SGKS Committee 2",
-                            "description" => "",
-                            "city"=> "Pune",
-                            "year"=> "2017",
-                              "members" => array(
-                                  array(
-                                    "fullname"=>"Jinal A2",
-                                    "designation"=>"Precident A1",
-                                    "member_image"=>"http://www.mocky.io/v2/5b87dba02e0000f81a05fb7d",
-                                    "area"=>"Pune",
-                                    "cont_number"=>"8446185105",
-                                    "email_id"=>"jinal@gmail.com"
-                                  ),array(
-                                    "fullname"=>"Jinal B2",
-                                    "designation"=>"Precident B1",
-                                    "member_image"=>"http://www.mocky.io/v2/5b87dba02e0000f81a05fb7d",
-                                    "area"=>"Pune",
-                                    "cont_number"=>"8446185105",
-                                    "email_id"=>"jinal@gmail.com"
-                                ),array(
-                                    "fullname"=>"Jinal C2",
-                                    "designation"=>"Precident C1",
-                                    "member_image"=>"http://www.mocky.io/v2/5b87dba02e0000f81a05fb7d",
-                                    "area"=>"Pune",
-                                    "cont_number"=>"8446185105",
-                                    "email_id"=>"jinal@gmail.com"
-                                )
-                          )
-                        )
-                      );
+             $data = array();
+             $committeeData = Committees::where('is_active',true)->get()->toArray(); //all city data
+             $count = 0;
+             foreach ($committeeData as $committee) {
+                 if ($request->has('language_id')) {
+                     $committeeTranslationData = CommitteesTranslations::where('language_id', $request->language_id)
+                         ->where('committee_id', $committee['id'])
+                         ->get()->toArray();
+                     if (count($committeeTranslationData) > 0) {
+                        $data[] = array(
+                            'id' => $committee['id'],
+                            'name' => $committeeTranslationData[0]['committee_name'],
+                            'description' => $committeeTranslationData[0]['description'],
+                            'city' => Cities::where('id', $committee['city_id'])->value('name'),
+                            "year"=> "2018",
+                            'created_at' => $committee['created_at'],
+                            'updated_at' => $committee['updated_at']
+                        );
+                     } else {
+                         $data[] = array(
+                             'id' => $committee['id'],
+                             'name' => $committee['committee_name'],
+                             'description' => $committee['description'],
+                             'city' => Cities::where('id', $committee['city_id'])->value('name'),
+                             "year"=> "2018",
+                             'created_at' => $committee['created_at'],
+                             'updated_at' => $committee['updated_at']
+                         );
+                     }
+                 } else {
+                     $data[] = array(
+                         'id' => $committee['id'],
+                         'name' => $committee['committee_name'],
+                         'description' => $committee['description'],
+                         'city' => Cities::where('id', $committee['city_id'])->value('name'),
+                         "year"=> "2018",
+                         'created_at' => $committee['created_at'],
+                         'updated_at' => $committee['updated_at']
+                     );
+                 }
+                 $memData = array();
+                 $committeeMemberData = CommitteeMembers::where('committee_id', $committee['id'])
+                     ->orderBy('id', 'ASC')
+                     ->get()->toArray();
+                 foreach ($committeeMemberData as $committeMember) {
+                     $memberImg = null;
+                     if($committeMember['profile_image'] != null) {
+                         $createMemberDirectoryName = sha1($committeMember['id']);
+                         $memberImg = env('SGKSWEB_BASEURL').env('COMMITTEE_MEMBER_IMAGES_UPLOAD').DIRECTORY_SEPARATOR.$createMemberDirectoryName.DIRECTORY_SEPARATOR.$committeMember['profile_image'];
+                     }
+
+                     if ($request->has('language_id')) {
+                         $committeeMemberTranslationData = CommitteeMembersTranslations::where('language_id', $request->language_id)
+                             ->where('member_id', $committeMember['id'])
+                             ->get()->toArray();
+                         if (count($committeeMemberTranslationData) > 0) {
+                             $memData[] = array(
+                                 'id' => $committeMember['id'],
+                                 'fullname' => ($committeeMemberTranslationData[0]['full_name'] != null) ? $committeeMemberTranslationData[0]['full_name'] : $committeMember['full_name'],
+                                 'member_image' => $memberImg,
+                                 'area' => Cities::where('id', $committee['city_id'])->value('name'),
+                                 "cont_number"=> $committeMember['mobile_number'],
+                                 "email_id"=> $committeMember['email_id'],
+                                 'created_at' => $committeMember['created_at'],
+                                 'updated_at' => $committeMember['updated_at']
+                             );
+                         } else {
+                             $memData[] = array(
+                                 'id' => $committeMember['id'],
+                                 'fullname' => $committeMember['full_name'],
+                                 'member_image' => $memberImg,
+                                 'area' => Cities::where('id', $committee['city_id'])->value('name'),
+                                 "cont_number"=> $committeMember['mobile_number'],
+                                 "email_id"=> $committeMember['email_id'],
+                                 'created_at' => $committeMember['created_at'],
+                                 'updated_at' => $committeMember['updated_at']
+                             );
+                         }
+                     } else {
+                         $memData[] = array(
+                             'id' => $committeMember['id'],
+                             'fullname' => $committeMember['full_name'],
+                             'member_image' => $memberImg,
+                             'area' => Cities::where('id', $committee['city_id'])->value('name'),
+                             "cont_number"=> $committeMember['mobile_number'],
+                             "email_id"=> $committeMember['email_id'],
+                             'created_at' => $committeMember['created_at'],
+                             'updated_at' => $committeMember['updated_at']
+                         );
+                     }
+
+                 }
+                 $data[$count]['members'] = $memData;
+                 $count++;
+             }
             $message = "Success";
             $status = 200;
         }catch(\Exception $e){
@@ -118,11 +122,8 @@ trait CommitteeTrait{
         }
         $response = [
             'message' => $message,
-            'data' => $data,
-            'page_id' => $page_id
+            'data' => $data
         ];
         return response()->json($response,$status);
     }
-
-
 }
