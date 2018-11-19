@@ -76,6 +76,7 @@ trait CommitteeTrait{
                                  'fullname' => ($committeeMemberTranslationData[0]['full_name'] != null) ? $committeeMemberTranslationData[0]['full_name'] : $committeMember['full_name'],
                                  'member_image' => $memberImg,
                                  'area' => Cities::where('id', $committee['city_id'])->value('name'),
+                                 'designation' => $committeMember['designation'],
                                  "cont_number"=> $committeMember['mobile_number'],
                                  "email_id"=> $committeMember['email_id'],
                                  'created_at' => $committeMember['created_at'],
@@ -85,6 +86,7 @@ trait CommitteeTrait{
                              $memData[] = array(
                                  'id' => $committeMember['id'],
                                  'fullname' => $committeMember['full_name'],
+                                 'designation' => $committeMember['designation'],
                                  'member_image' => $memberImg,
                                  'area' => Cities::where('id', $committee['city_id'])->value('name'),
                                  "cont_number"=> $committeMember['mobile_number'],
@@ -97,6 +99,7 @@ trait CommitteeTrait{
                          $memData[] = array(
                              'id' => $committeMember['id'],
                              'fullname' => $committeMember['full_name'],
+                             'designation' => $committeMember['designation'],
                              'member_image' => $memberImg,
                              'area' => Cities::where('id', $committee['city_id'])->value('name'),
                              "cont_number"=> $committeMember['mobile_number'],

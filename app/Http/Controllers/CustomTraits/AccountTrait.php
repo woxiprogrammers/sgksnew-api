@@ -12,8 +12,21 @@ trait AccountTrait{
     public function listing(Request $request){
          try{
              $data = array();
-             $accountData = Accounts::orderBy('id', 'ASC')
-                 ->get()->toArray(); //all city data
+             if ($request->has('year')) {
+                 $year = $request->year;
+             } else {
+                 $year = date("Y");
+             }
+             $ids = Accounts::whereYear('created_at', '=', $year)->pluck('id')->toArray();
+
+             if (count($ids) > 0) {
+                 $accountData = Accounts::orderBy('id', 'ASC')
+                     ->get()->toArray(); //all city data
+             } else {
+                 $accountData = Accounts::orderBy('id', 'ASC')
+                     ->whereIn('id', $ids)
+                     ->get()->toArray(); //all city data
+             }
              $count = 0;
              foreach ($accountData as $account) {
                  if ($request->has('language_id')) {
