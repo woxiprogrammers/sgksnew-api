@@ -17,6 +17,7 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
 
+
 Route::group(['prefix' => 'v1'], function() {
 
 	Route::group(['prefix' => 'sgks-member'], function() {
@@ -53,7 +54,8 @@ Route::group(['prefix' => 'v1'], function() {
 		Route::get('master-list', array('uses' => 'Master\WebviewController@masterList'));
 		Route::post('addmetosgks', array('uses' => 'Master\WebviewController@addMeToSgks'));
 		Route::post('sgks-suggestion', array('uses' => 'Master\WebviewController@sgksSuggestion'));
-		
+		Route::get('sgks-version', array('uses' => 'Master\WebviewController@minimumSupportedVersion'));
+
 	});
 
     Route::group(['prefix' => 'sgks-offline'], function() {

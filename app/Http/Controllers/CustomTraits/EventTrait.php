@@ -101,5 +101,4 @@ trait EventTrait{
         return response()->json($response,$status);
     }
 
-
 }
