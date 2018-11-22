@@ -21,10 +21,10 @@ trait EventTrait{
              $ids = Events::whereYear('created_at', '=', $year)->pluck('id')->toArray();
 
              if (count($ids) > 0) {
-                 $eventData = Events::orderBy('id', 'ASC')
+                 $eventData = Events::orderBy('id', 'DESC')
                      ->get()->toArray(); //all city data
              } else {
-                 $eventData = Events::orderBy('id', 'ASC')
+                 $eventData = Events::orderBy('id', 'DESC')
                      ->whereIn('id', $ids)
                      ->get()->toArray(); //all city data
              }
@@ -37,14 +37,15 @@ trait EventTrait{
                      if (count($eventTranslationData) > 0) {
                          $data[] = array(
                              'id' => $event['id'],
-                             'event_name' => $eventTranslationData[0]['event_name'],
-                             'desc' => $eventTranslationData[0]['description'],
-                             'venue' => $eventTranslationData[0]['venue'],
+                             'event_name' => ($eventTranslationData[0]['event_name'] != null) ? $eventTranslationData[0]['event_name'] : $event['event_name'],
+                             'desc' => ($eventTranslationData[0]['description'] != null) ? $eventTranslationData[0]['description'] : $event['description'],
+                             'venue' => ($eventTranslationData[0]['venue'] != null) ? $eventTranslationData[0]['venue']  : $event['venue'],
                              'city' => Cities::where('id', $event['city_id'])->value('name'),
                              'event_date' => date('d M y',strtotime($event['start_date']))." to ".date('d M y',strtotime($event['end_date'])),
                              'year' => date('Y',strtotime($event['start_date'])),
                          );
                      } else {
+                         dd(1);
                          $data[] = array(
                              'id' => $event['id'],
                              'event_name' => $event['event_name'],

@@ -37,8 +37,8 @@ trait MessageTrait{
                     if (count($messageTranslationData) > 0) {
                         $data[] = array(
                             'id' => $sgksMessage['id'],
-                            'title' => $messageTranslationData[0]['title'],
-                            'msg_desc' => $messageTranslationData[0]['description'],
+                            'title' => ($messageTranslationData[0]['title'] != null) ?  $messageTranslationData[0]['title'] : $sgksMessage['title'],
+                            'msg_desc' => ($messageTranslationData[0]['description'] != null) ? $messageTranslationData[0]['description'] : $sgksMessage['description'],
                             'msg_img' => env('SGKSWEB_BASEURL').env('MESSAGE_IMAGES_UPLOAD'). DIRECTORY_SEPARATOR.sha1($sgksMessage['id']).DIRECTORY_SEPARATOR.$sgksMessage['image_url'],
                             'msg_type' => MessageTypes::where('id' , $sgksMessage['message_type_id'])->value('slug'),
                             'sgks_city' => Cities::where('id', $sgksMessage['city_id'])->value('name'),

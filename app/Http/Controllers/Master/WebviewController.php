@@ -8,27 +8,28 @@ use App\Http\Controllers\Controller;
 class WebviewController extends Controller
 {	
 
-	public function healthPlus() {
+	public function healthPlus($sgks_city, $language_id) {
+
 	    $data = "<html><h1>SGKS - Health plus</h1></html>";
         return $data;
     }
 
-    public function privacyPolicy() {
+    public function privacyPolicy($sgks_city, $language_id) {
 	    $data = "<html><h1>SGKS - Privacy Policy</h1></html>";
         return $data;
     }
 
-    public function help() {
+    public function help($sgks_city, $language_id) {
 	    $data = "<html><h1>SGKS - Help</h1></html>";
         return $data;
     }
 
-    public function qa() {
+    public function qa($sgks_city, $language_id) {
 	    $data = "<html><h1>SGKS - Q and A</h1></html>";
         return $data;
     }
 
-    public function contactUs() {
+    public function contactUs($sgks_city, $language_id) {
 	    $data = "<html><h1>SGKS - Contact Us</h1></html>";
         return $data;
     }
