@@ -18,13 +18,14 @@ trait MessageTrait{
             } else {
                 $year = date("Y");
             }
-            $ids = Messages::whereYear('created_at', '=', $year)->pluck('id')->toArray();
+            $ids = Messages::whereYear('created_at', '=', $year)
+                             ->pluck('id')->toArray();
 
             if (count($ids) > 0) {
-                $messageData = Messages::orderBy('id', 'ASC')
+                $messageData = Messages::orderBy('id', 'desc')
                     ->get()->toArray(); //all city data
             } else {
-                $messageData = Messages::orderBy('id', 'ASC')
+                $messageData = Messages::orderBy('id', 'desc')
                     ->whereIn('id', $ids)
                     ->get()->toArray(); //all city data
             }
