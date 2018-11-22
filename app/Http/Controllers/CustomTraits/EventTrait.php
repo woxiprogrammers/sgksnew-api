@@ -45,7 +45,6 @@ trait EventTrait{
                              'year' => date('Y',strtotime($event['start_date'])),
                          );
                      } else {
-                         dd(1);
                          $data[] = array(
                              'id' => $event['id'],
                              'event_name' => $event['event_name'],
