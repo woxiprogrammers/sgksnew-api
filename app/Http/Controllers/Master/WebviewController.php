@@ -8,27 +8,28 @@ use App\Http\Controllers\Controller;
 class WebviewController extends Controller
 {	
 
-	public function healthPlus() {
+	public function healthPlus($sgks_city, $language_id) {
+
 	    $data = "<html><h1>SGKS - Health plus</h1></html>";
         return $data;
     }
 
-    public function privacyPolicy() {
+    public function privacyPolicy($sgks_city, $language_id) {
 	    $data = "<html><h1>SGKS - Privacy Policy</h1></html>";
         return $data;
     }
 
-    public function help() {
+    public function help($sgks_city, $language_id) {
 	    $data = "<html><h1>SGKS - Help</h1></html>";
         return $data;
     }
 
-    public function qa() {
+    public function qa($sgks_city, $language_id) {
 	    $data = "<html><h1>SGKS - Q and A</h1></html>";
         return $data;
     }
 
-    public function contactUs() {
+    public function contactUs($sgks_city, $language_id) {
 	    $data = "<html><h1>SGKS - Contact Us</h1></html>";
         return $data;
     }
@@ -140,4 +141,27 @@ class WebviewController extends Controller
         ];
         return response()->json($response,$status);
 	}
+
+    public function minimumSupportedVersion(Request $request){
+        try{
+            $status = 200;
+            $message = "Successfully Listed";
+            $data['minimum_app_version'] = env('MINIMUM_APP_VERSION');
+            $data['current_app_version'] = env('CURRENT_APP_VERSION');
+            $data['maximum_app_version'] = env('MAXIMUM_APP_VERSION');
+        }catch(\Exception $e){
+            $message = "Something went wrong.";
+            $status = 500;
+            $data = [
+                'action' => 'Minimum supported Version',
+                'exception' => $e->getMessage()
+            ];
+            Log::critical(json_encode($data));
+        }
+        $response = [
+            "message" => $message,
+            "data" => $data
+        ];
+        return response()->json($response,$status);
+    }
 }

@@ -1,65 +1,79 @@
 <?php
 namespace App\Http\Controllers\CustomTraits;
 
+use App\Messages;
+use App\MessageTranslations;
+use App\Cities;
+use App\MessageTypes;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Http\Request;
 
 trait MessageTrait{
 
     public function listing(Request $request){
-         try{
-             $displayLength = 5;
-             $totalRecords = $request->page_id * $displayLength;
-             $page_id = 1;
-             $data = array(
-                       array(
-                          "id" => 1,
-                          "title" => "Happy BD PQR!",
-                          "msg_desc" => "Happy BD PQR.",
-                          "msg_img" => "https://goo.gl/images/6GoWWT",
-                          "msg_type" => "birthday",
-                          "sgks_city" => "PUNE"
-                        ),
-                        array(
-                          "id" => 2,
-                          "title" => "Happy BD ABC!",
-                          "msg_desc" => "Happy BD ABC.",
-                          "msg_img" => "https://goo.gl/images/6GoWWT",
-                          "msg_type" => "birthday",
-                          "sgks_city" => "PUNE"
-                        ),
-                        array(
-                           "id" => 3,
-                          "title" => "Happy BD XYZ!",
-                          "msg_desc" => "Happy BD PQR.",
-                          "msg_img" => "https://goo.gl/images/6GoWWT",
-                          "msg_type" => "general",
-                          "sgks_city" => "PUNE"
-                        ),
-                        array(
-                          "id" => 4,
-                          "title" => "Happy BD QWERTY!",
-                          "msg_desc" => "Happy BD PQR.",
-                          "msg_img" => "https://goo.gl/images/6GoWWT",
-                          "msg_type" => "achievement",
-                          "sgks_city" => "PUNE"
-                        ),
-                        array(
-                          "id" => 5,
-                          "title" => "Happy BD ASDF!",
-                          "msg_desc" => "Happy BD PQR.",
-                          "msg_img" => "https://goo.gl/images/6GoWWT",
-                          "msg_type" => "nidhan",
-                          "sgks_city" => "PUNE"
-                          )
-                      );
+        try{
+            $data = array();
+            if ($request->has('year')) {
+                $year = $request->year;
+            } else {
+                $year = date("Y");
+            }
+            $ids = Messages::whereYear('created_at', '=', $year)
+                             ->pluck('id')->toArray();
+
+            if (count($ids) > 0) {
+                $messageData = Messages::orderBy('id', 'desc')
+                    ->get()->toArray(); //all city data
+            } else {
+                $messageData = Messages::orderBy('id', 'desc')
+                    ->whereIn('id', $ids)
+                    ->get()->toArray(); //all city data
+            }
+            foreach ($messageData as $sgksMessage) {
+                if ($request->has('language_id')) {
+                    $messageTranslationData = MessageTranslations::where('language_id', $request->language_id)
+                        ->where('message_id', $sgksMessage['id'])
+                        ->get()->toArray();
+                    if (count($messageTranslationData) > 0) {
+                        $data[] = array(
+                            'id' => $sgksMessage['id'],
+                            'title' => ($messageTranslationData[0]['title'] != null) ?  $messageTranslationData[0]['title'] : $sgksMessage['title'],
+                            'msg_desc' => ($messageTranslationData[0]['description'] != null) ? $messageTranslationData[0]['description'] : $sgksMessage['description'],
+                            'msg_img' => env('SGKSWEB_BASEURL').env('MESSAGE_IMAGES_UPLOAD'). DIRECTORY_SEPARATOR.sha1($sgksMessage['id']).DIRECTORY_SEPARATOR.$sgksMessage['image_url'],
+                            'msg_type' => MessageTypes::where('id' , $sgksMessage['message_type_id'])->value('slug'),
+                            'sgks_city' => Cities::where('id', $sgksMessage['city_id'])->value('name'),
+                        );
+                    } else {
+                        $data[] = array(
+                            'id' => $sgksMessage['id'],
+                            'title' => $sgksMessage['title'],
+                            'msg_desc' => $sgksMessage['description'],
+                            'msg_img' => env('SGKSWEB_BASEURL').env('MESSAGE_IMAGES_UPLOAD'). DIRECTORY_SEPARATOR.sha1($sgksMessage['id']).DIRECTORY_SEPARATOR.$sgksMessage['image_url'],
+                            'msg_type' => MessageTypes::where('id' , $sgksMessage['message_type_id'])->value('slug'),
+                            'sgks_city' => Cities::where('id', $sgksMessage['city_id'])->value('name'),
+                        );
+                    }
+
+                } else {
+                    $data[] = array(
+                        'id' => $sgksMessage['id'],
+                        'title' => $sgksMessage['title'],
+                        'msg_desc' => $sgksMessage['description'],
+                        'msg_img' => env('SGKSWEB_BASEURL').env('MESSAGE_IMAGES_UPLOAD'). DIRECTORY_SEPARATOR.sha1($sgksMessage['id']).DIRECTORY_SEPARATOR.$sgksMessage['image_url'],
+                        'msg_type' => MessageTypes::where('id' , $sgksMessage['message_type_id'])->value('slug'),
+                        'sgks_city' => Cities::where('id', $sgksMessage['city_id'])->value('name'),
+                    );
+                }
+
+            }
+
             $message = "Success";
             $status = 200;
         }catch(\Exception $e){
-            $message = "Fail";
+            $message = "Somethimg went wrong";
             $status = 500;
             $data = [
-                'action' => 'Get all members',
+                'action' => 'Get all Message data',
                 'exception' => $e->getMessage(),
                 'params' => $request->all()
             ];
@@ -68,7 +82,6 @@ trait MessageTrait{
         $response = [
             'message' => $message,
             'data' => $data,
-            'page_id' => $page_id
         ];
         return response()->json($response,$status);
     }

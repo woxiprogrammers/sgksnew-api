@@ -17,6 +17,7 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
 
+
 Route::group(['prefix' => 'v1'], function() {
 
 	Route::group(['prefix' => 'sgks-member'], function() {
@@ -45,15 +46,18 @@ Route::group(['prefix' => 'v1'], function() {
 	});
 
 	Route::group(['prefix' => 'sgks-public'], function() {
-		Route::get('health-plus', array('uses' => 'Master\WebviewController@healthPlus'));
-		Route::get('privacy-policy', array('uses' => 'Master\WebviewController@privacyPolicy'));
-		Route::get('help', array('uses' => 'Master\WebviewController@help'));
-		Route::get('q-a', array('uses' => 'Master\WebviewController@qa'));
-		Route::get('contact-us', array('uses' => 'Master\WebviewController@contactUs'));
+		Route::get('health-plus/{sgks_city}/{language_id}', array('uses' => 'Master\WebviewController@healthPlus'));
+		Route::get('privacy-policy/{sgks_city}/{language_id}', array('uses' => 'Master\WebviewController@privacyPolicy'));
+		Route::get('help/{sgks_city}/{language_id}', array('uses' => 'Master\WebviewController@help'));
+		Route::get('q-a/{sgks_city}/{language_id}', array('uses' => 'Master\WebviewController@qa'));
+		Route::get('contact-us/{sgks_city}/{language_id}', array('uses' => 'Master\WebviewController@contactUs'));
+
 		Route::get('master-list', array('uses' => 'Master\WebviewController@masterList'));
+
 		Route::post('addmetosgks', array('uses' => 'Master\WebviewController@addMeToSgks'));
 		Route::post('sgks-suggestion', array('uses' => 'Master\WebviewController@sgksSuggestion'));
-		
+		Route::get('sgks-version', array('uses' => 'Master\WebviewController@minimumSupportedVersion'));
+
 	});
 
     Route::group(['prefix' => 'sgks-offline'], function() {
