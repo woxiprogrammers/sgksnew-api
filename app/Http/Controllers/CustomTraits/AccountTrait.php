@@ -20,10 +20,10 @@ trait AccountTrait{
              $ids = Accounts::whereYear('created_at', '=', $year)->pluck('id')->toArray();
 
              if (count($ids) > 0) {
-                 $accountData = Accounts::orderBy('id', 'ASC')
+                 $accountData = Accounts::orderBy('id', 'DESC')
                      ->get()->toArray(); //all city data
              } else {
-                 $accountData = Accounts::orderBy('id', 'ASC')
+                 $accountData = Accounts::orderBy('id', 'DESC')
                      ->whereIn('id', $ids)
                      ->get()->toArray(); //all city data
              }
