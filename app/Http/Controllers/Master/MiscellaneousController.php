@@ -35,7 +35,14 @@ class MiscellaneousController extends Controller
 
     public function getCity(Request $request) {
         try{
-            $data = Cities::where('is_active',true)->get(['id as city_id','name as city_name'])->toArray();
+            $cityName = $request->search_city;
+            if($cityName != null){
+                $data = Cities::where('is_active', true)
+                      ->where('name','ilike',"%".$cityName."%")
+                      ->get(['id as city_id', 'name as city_name'])->toArray();
+            }else {
+                $data = Cities::where('is_active', true)->get(['id as city_id', 'name as city_name'])->toArray();
+            }
             $message = "Success";
             $status = 200;
         }catch(\Exception $e){
