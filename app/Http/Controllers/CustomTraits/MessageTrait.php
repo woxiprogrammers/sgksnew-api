@@ -24,6 +24,11 @@ trait MessageTrait{
             $ids = Messages::whereYear('created_at', '=', $year)
                              ->pluck('id')->toArray();
 
+            if($request->has('sgks_city')){
+                $ids = Messages::where('city_id',$request->sgks_city)
+                    ->pluck('id')->toArray();
+            }
+
             if (count($ids) < 0) {
                 $messageData = Messages::orderBy('id', 'desc')
                     ->skip($skip)->take($take)
