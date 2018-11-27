@@ -4,33 +4,44 @@ namespace App\Http\Controllers\Master;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\DrawerWebview;
+use App\DrawerWebviewDetails;
 
 class WebviewController extends Controller
 {	
 
 	public function healthPlus($sgks_city, $language_id) {
-
-	    $data = "<html><h1>SGKS - Health plus</h1></html>";
+	    $id = DrawerWebview::where('slug','health-plus')->value('id');
+        $data = DrawerWebviewDetails::where('drawer_web_id',$id)->value('description');
+	    $data1 = "<html><h1>SGKS - Health plus</h1></html>";
         return $data;
     }
 
     public function privacyPolicy($sgks_city, $language_id) {
-	    $data = "<html><h1>SGKS - Privacy Policy</h1></html>";
+        $id = DrawerWebview::where('slug','privacy-policy')->value('id');
+        $data = DrawerWebviewDetails::where('drawer_web_id',$id)->value('description');
+	    $data1 = "<html><h1>SGKS - Privacy Policy</h1></html>";
         return $data;
     }
 
     public function help($sgks_city, $language_id) {
-	    $data = "<html><h1>SGKS - Help</h1></html>";
+        $id = DrawerWebview::where('slug','help')->value('id');
+        $data = DrawerWebviewDetails::where('drawer_web_id',$id)->value('description');
+	    $data1 = "<html><h1>SGKS - Help</h1></html>";
         return $data;
     }
 
     public function qa($sgks_city, $language_id) {
-	    $data = "<html><h1>SGKS - Q and A</h1></html>";
+        $id = DrawerWebview::where('slug','qa')->value('id');
+        $data = DrawerWebviewDetails::where('drawer_web_id',$id)->value('description');
+	    $data1 = "<html><h1>SGKS - Q and A</h1></html>";
         return $data;
     }
 
     public function contactUs($sgks_city, $language_id) {
-	    $data = "<html><h1>SGKS - Contact Us</h1></html>";
+        $id = DrawerWebview::where('slug','contact-us')->value('id');
+        $data = DrawerWebviewDetails::where('drawer_web_id',$id)->value('description');
+	    $data1 = "<html><h1>SGKS - Contact Us</h1></html>";
         return $data;
     }
 

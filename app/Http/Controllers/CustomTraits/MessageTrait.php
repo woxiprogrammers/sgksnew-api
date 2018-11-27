@@ -12,6 +12,9 @@ trait MessageTrait{
 
     public function listing(Request $request){
         try{
+            $take = 10;
+            $page_id = ($request->page_id);
+            $skip = $page_id * $take;
             $data = array();
             if ($request->has('year')) {
                 $year = $request->year;
@@ -21,12 +24,14 @@ trait MessageTrait{
             $ids = Messages::whereYear('created_at', '=', $year)
                              ->pluck('id')->toArray();
 
-            if (count($ids) > 0) {
+            if (count($ids) < 0) {
                 $messageData = Messages::orderBy('id', 'desc')
+                    ->skip($skip)->take($take)
                     ->get()->toArray(); //all city data
             } else {
                 $messageData = Messages::orderBy('id', 'desc')
                     ->whereIn('id', $ids)
+                    ->skip($skip)->take($take)
                     ->get()->toArray(); //all city data
             }
             foreach ($messageData as $sgksMessage) {
@@ -82,6 +87,7 @@ trait MessageTrait{
         $response = [
             'message' => $message,
             'data' => $data,
+            'page_id' => $page_id
         ];
         return response()->json($response,$status);
     }
