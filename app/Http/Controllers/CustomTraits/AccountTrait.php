@@ -19,7 +19,13 @@ trait AccountTrait{
              }
              $ids = Accounts::whereYear('created_at', '=', $year)->pluck('id')->toArray();
 
-             if (count($ids) > 0) {
+             if($request->has('sgks_city')){
+                 $ids = Accounts::where('city_id',$request->sgks_city)
+                     ->whereIn('id',$ids)
+                     ->pluck('id')->toArray();
+             }
+
+             if (count($ids) < 1) {
                  $accountData = Accounts::orderBy('id', 'DESC')
                      ->get()->toArray(); //all city data
              } else {
