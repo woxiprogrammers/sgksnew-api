@@ -20,7 +20,13 @@ trait EventTrait{
              }
              $ids = Events::whereYear('created_at', '=', $year)->pluck('id')->toArray();
 
-             if (count($ids) > 0) {
+             if($request->has('sgks_city')){
+                 $ids = Events::where('city_id',$request->sgks_city)
+                     ->whereIn('id',$ids)
+                     ->pluck('id')->toArray();
+             }
+
+             if (count($ids) < 1) {
                  $eventData = Events::orderBy('id', 'DESC')
                      ->get()->toArray(); //all city data
              } else {

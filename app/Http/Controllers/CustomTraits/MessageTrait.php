@@ -16,20 +16,13 @@ trait MessageTrait{
             $page_id = ($request->page_id);
             $skip = $page_id * $take;
             $data = array();
-            if ($request->has('year')) {
-                $year = $request->year;
-            } else {
-                $year = date("Y");
-            }
-            $ids = Messages::whereYear('created_at', '=', $year)
-                             ->pluck('id')->toArray();
-
+            $ids = array();
             if($request->has('sgks_city')){
                 $ids = Messages::where('city_id',$request->sgks_city)
                     ->pluck('id')->toArray();
             }
 
-            if (count($ids) < 0) {
+            if (count($ids) < 1) {
                 $messageData = Messages::orderBy('id', 'desc')
                     ->skip($skip)->take($take)
                     ->get()->toArray(); //all city data

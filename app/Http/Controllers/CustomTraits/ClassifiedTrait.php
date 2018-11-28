@@ -20,22 +20,24 @@ trait ClassifiedTrait{
              $data = array();
              $ids = array();
 
-             if ($request->has('year')) {
-                 $year = $request->year;
-             } else {
-                 $year = date("Y");
-             }
-             $ids = Classifieds::whereYear('created_at', '=', $year)->pluck('id')->toArray();
-
              if($request->has('sgks_city')){
                  $ids = Classifieds::where('city_id',$request->sgks_city)
                      ->pluck('id')->toArray();
              }
 
-             $classifiedData = Classifieds::whereIn('id', $ids)
-                 ->where('is_active', true)
-                 ->skip($skip)->take($take)
-                 ->get()->toArray();
+             if (count($ids) < 1) {
+                 $classifiedData = Classifieds::orderBy('id', 'desc')
+                     ->where('is_active', true)
+                     ->skip($skip)->take($take)
+                     ->get()->toArray(); //all city data
+             } else {
+                 $classifiedData = Classifieds::orderBy('id', 'desc')
+                     ->whereIn('id', $ids)
+                     ->where('is_active', true)
+                     ->skip($skip)->take($take)
+                     ->get()->toArray();
+             }
+
              if(count($classifiedData) == 0) {
                  $page_id = "";
              } else {
