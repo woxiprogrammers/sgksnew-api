@@ -26,14 +26,10 @@ trait EventTrait{
                      ->pluck('id')->toArray();
              }
 
-             if (count($ids) < 1) {
-                 $eventData = Events::orderBy('id', 'DESC')
-                     ->get()->toArray(); //all city data
-             } else {
-                 $eventData = Events::orderBy('id', 'DESC')
-                     ->whereIn('id', $ids)
-                     ->get()->toArray(); //all city data
-             }
+             $eventData = Events::orderBy('id', 'DESC')
+                 ->whereIn('id', $ids)
+                 ->get()->toArray(); //all city data
+
              $count = 0;
              foreach ($eventData as $event) {
                  if ($request->has('language_id')) {

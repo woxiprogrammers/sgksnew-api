@@ -38,12 +38,6 @@ trait ClassifiedTrait{
                      ->get()->toArray();
              }
 
-             if(count($classifiedData) == 0) {
-                 $page_id = "";
-             } else {
-                 $page_id = $page_id + 1;
-             }
-
              $count = 0;
              foreach ($classifiedData as $classified) {
                  $classifiedPackage = ClassifiedPackages::where('id',$classified['package_id'])->first();
