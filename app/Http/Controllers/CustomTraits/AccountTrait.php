@@ -25,14 +25,10 @@ trait AccountTrait{
                      ->pluck('id')->toArray();
              }
 
-             if (count($ids) < 1) {
-                 $accountData = Accounts::orderBy('id', 'DESC')
-                     ->get()->toArray(); //all city data
-             } else {
-                 $accountData = Accounts::orderBy('id', 'DESC')
-                     ->whereIn('id', $ids)
-                     ->get()->toArray(); //all city data
-             }
+             $accountData = Accounts::orderBy('id', 'DESC')
+                 ->whereIn('id', $ids)
+                 ->get()->toArray(); //all city data
+
              $count = 0;
              foreach ($accountData as $account) {
                  if ($request->has('language_id')) {
