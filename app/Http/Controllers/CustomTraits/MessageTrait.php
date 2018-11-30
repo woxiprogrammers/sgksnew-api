@@ -32,6 +32,11 @@ trait MessageTrait{
                     ->skip($skip)->take($take)
                     ->get()->toArray(); //all city data
             }
+            if(count($messageData) == 0) {
+                $page_id = "";
+            } else {
+                $page_id = $page_id + 1;
+            }
             foreach ($messageData as $sgksMessage) {
                 if ($request->has('language_id')) {
                     $messageTranslationData = MessageTranslations::where('language_id', $request->language_id)
