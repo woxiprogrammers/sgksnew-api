@@ -13,7 +13,7 @@ trait AccountTrait{
     public function listing(Request $request){
          try{
              $data = array();
-             if ($request->has('year')) {
+             if ($request->has('year') && $request->year != null) {
                  $year = $request->year;
              } else {
                  $year = date("Y");
@@ -26,10 +26,14 @@ trait AccountTrait{
                      ->pluck('id')->toArray();
              }
 
-             $accountData = Accounts::orderBy('id', 'DESC')
-                 ->whereIn('id', $ids)
-                 ->get()->toArray(); //all city data
-
+             if (count($ids) < 1) {
+                 $accountData = Accounts::orderBy('id', 'DESC')
+                     ->get()->toArray();
+             } else {
+                 $accountData = Accounts::orderBy('id', 'DESC')
+                     ->whereIn('id', $ids)
+                     ->get()->toArray();
+             }
              $count = 0;
              foreach ($accountData as $account) {
                  if ($request->has('language_id')) {
