@@ -7,14 +7,16 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\DrawerWebview;
 use App\DrawerWebviewDetails;
+use Illuminate\Support\Facades\Log;
 
 class WebviewController extends Controller
 {	
 
-	public function healthPlus($sgks_city, $language_id) {
+	public function healthPlus(Request $request,$sgks_city, $language_id) {
         try{
             $cityId = $sgks_city;
             $languageId = $language_id;
+            $data = null;
             $webView = DrawerWebview::where('slug','health-plus')->value('id');
             if($cityId != null){
                 $healthPlusData = DrawerWebviewDetails::where('drawer_web_id',$webView)
@@ -43,7 +45,6 @@ class WebviewController extends Controller
             $message = "Success";
             $status = 200;
         }catch(\Exception $e){
-            dd($e->getMessage());
             $message = "Fail";
             $status = 500;
             $data = [
@@ -58,13 +59,9 @@ class WebviewController extends Controller
         ];
         return response()->json($response,$status);
 
-	    /*$id = DrawerWebview::where('slug','health-plus')->value('id');
-        $data = DrawerWebviewDetails::where('drawer_web_id',$id)->value('description');
-	    $data1 = "<html><h1>SGKS - Health plus</h1></html>";
-        return $data;*/
     }
 
-    public function privacyPolicy($sgks_city, $language_id) {
+    public function privacyPolicy(Request $request,$sgks_city, $language_id) {
 
         try{
             $cityId = $sgks_city;
@@ -98,7 +95,6 @@ class WebviewController extends Controller
             $message = "Success";
             $status = 200;
         }catch(\Exception $e){
-            dd($e->getMessage());
             $message = "Fail";
             $status = 500;
             $data = [
@@ -113,13 +109,9 @@ class WebviewController extends Controller
         ];
         return response()->json($response,$status);
 
-	    /*$id = DrawerWebview::where('slug','privacy-policy')->value('id');
-        $data = DrawerWebviewDetails::where('drawer_web_id',$id)->value('description');
-	    $data1 = "<html><h1>SGKS - Privacy Policy</h1></html>";
-        return $data;*/
     }
 
-    public function help($sgks_city, $language_id) {
+    public function help(Request $request,$sgks_city, $language_id) {
         try{
             $cityId = $sgks_city;
             $languageId = $language_id;
@@ -152,7 +144,6 @@ class WebviewController extends Controller
             $message = "Success";
             $status = 200;
         }catch(\Exception $e){
-            dd($e->getMessage());
             $message = "Fail";
             $status = 500;
             $data = [
@@ -167,14 +158,9 @@ class WebviewController extends Controller
         ];
         return response()->json($response,$status);
 
-
-        /*$id = DrawerWebview::where('slug','help')->value('id');
-        $data = DrawerWebviewDetails::where('drawer_web_id',$id)->value('description');
-        $data1 = "<html><h1>SGKS - Help</h1></html>";
-        return $data;*/
     }
 
-    public function qa($sgks_city, $language_id) {
+    public function qa(Request $request, $sgks_city, $language_id) {
         try{
             $cityId = $sgks_city;
             $languageId = $language_id;
@@ -207,7 +193,6 @@ class WebviewController extends Controller
             $message = "Success";
             $status = 200;
         }catch(\Exception $e){
-            dd($e->getMessage());
             $message = "Fail";
             $status = 500;
             $data = [
@@ -221,13 +206,10 @@ class WebviewController extends Controller
             'data' => $data
         ];
         return response()->json($response,$status);
-       /* $id = DrawerWebview::where('slug','qa')->value('id');
-        $data = DrawerWebviewDetails::where('drawer_web_id',$id)->value('description');
-	    $data1 = "<html><h1>SGKS - Q and A</h1></html>";
-        return $data;*/
+
     }
 
-    public function contactUs($sgks_city, $language_id) {
+    public function contactUs(Request $request, $sgks_city, $language_id) {
         try{
             $cityId = $sgks_city;
             $languageId = $language_id;
@@ -260,7 +242,6 @@ class WebviewController extends Controller
             $message = "Success";
             $status = 200;
         }catch(\Exception $e){
-            dd($e->getMessage());
             $message = "Fail";
             $status = 500;
             $data = [
