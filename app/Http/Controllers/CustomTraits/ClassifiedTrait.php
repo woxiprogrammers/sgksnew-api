@@ -24,7 +24,6 @@ trait ClassifiedTrait{
                  $ids = Classifieds::where('city_id',$request->sgks_city)
                      ->pluck('id')->toArray();
              }
-
              if (count($ids) < 1) {
                  $classifiedData = Classifieds::orderBy('id', 'desc')
                      ->where('is_active', true)
@@ -36,6 +35,12 @@ trait ClassifiedTrait{
                      ->where('is_active', true)
                      ->skip($skip)->take($take)
                      ->get()->toArray();
+             }
+
+             if(count($classifiedData) == 0) {
+                 $page_id = "";
+             } else {
+                 $page_id = $page_id + 1;
              }
 
              $count = 0;

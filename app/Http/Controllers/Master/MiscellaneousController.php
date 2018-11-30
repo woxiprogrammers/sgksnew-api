@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Master;
 
 use App\BloodGroup;
 use App\Cities;
+use App\CityTranslations;
 use App\Members;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\File;
@@ -52,11 +53,31 @@ class MiscellaneousController extends Controller
             foreach ($cityresultData as $cityData) {
                 $memberCount = Members::where('city_id',$cityData['city_id'])
                                         ->get()->count();
-                $data[] = array(
-                    'city_id' => $cityData['city_id'],
-                    'city_name' => $cityData['city_name'],
-                    'city_member_count' => $memberCount,
-                );
+                if ($request->has('language_id')) {
+                    $cityTranslationData = CityTranslations::where('language_id', $request->language_id)
+                        ->where('city_id', $cityData['city_id'])
+                        ->get()->toArray();
+                    if (count($cityTranslationData) > 0) {
+                        $data[] = array(
+                            'city_id' => $cityData['city_id'],
+                            'city_name' => ($cityTranslationData[0]['name'] != null) ? $cityTranslationData[0]['name'] : $cityData['city_name'],
+                            'city_member_count' => $memberCount,
+                        );
+                    } else {
+                        $data[] = array(
+                            'city_id' => $cityData['city_id'],
+                            'city_name' => $cityData['city_name'],
+                            'city_member_count' => $memberCount,
+                        );
+                    }
+
+                } else {
+                        $data[] = array(
+                            'city_id' => $cityData['city_id'],
+                            'city_name' => $cityData['city_name'],
+                            'city_member_count' => $memberCount,
+                    );
+                }
             }
             $message = "Success";
             $status = 200;
@@ -64,7 +85,7 @@ class MiscellaneousController extends Controller
             $message = "Fail";
             $status = 500;
             $data = [
-                'action' => 'Get Bloodgroup list',
+                'action' => 'Get Cities list',
                 'exception' => $e->getMessage(),
                 'params' => $request->all()
             ];
