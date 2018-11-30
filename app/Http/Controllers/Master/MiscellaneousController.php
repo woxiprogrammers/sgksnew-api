@@ -54,7 +54,8 @@ class MiscellaneousController extends Controller
                                         ->get()->count();
                 $data[] = array(
                     'city_id' => $cityData['city_id'],
-                    'city_name' => $cityData['city_name']." - Total Members :  (".$memberCount.")"
+                    'city_name' => $cityData['city_name'],
+                    'city_member_count' => $memberCount,
                 );
             }
             $message = "Success";

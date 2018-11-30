@@ -4,6 +4,7 @@ namespace App\Http\Controllers\CustomTraits;
 use App\AccountImages;
 use App\Accounts;
 use App\AccountsTranslations;
+use App\Cities;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Http\Request;
 
@@ -44,6 +45,7 @@ trait AccountTrait{
                              'id' => $account['id'],
                              'name' => ($accountTranslationData[0]['name'] != null) ? $accountTranslationData[0]['name'] : $account['name'],
                              'description' => ($accountTranslationData[0]['description']) ? $accountTranslationData[0]['description'] : $account['description'],
+                             'city_name' => Cities::where('id',$account['city_id'])->value('name'),
                              'created_at' => $account['created_at'],
                              'updated_at' => $account['updated_at']
                          );
@@ -52,6 +54,7 @@ trait AccountTrait{
                              'id' => $account['id'],
                              'name' => $account['name'],
                              'description' => $account['description'],
+                             'city_name' => Cities::where('id',$account['city_id'])->value('name'),
                              'created_at' => $account['created_at'],
                              'updated_at' => $account['updated_at']
                          );
@@ -61,6 +64,7 @@ trait AccountTrait{
                          'id' => $account['id'],
                          'name' => $account['name'],
                          'description' => $account['description'],
+                         'city_name' => Cities::where('id',$account['city_id'])->value('name'),
                          'created_at' => $account['created_at'],
                          'updated_at' => $account['updated_at']
                      );
