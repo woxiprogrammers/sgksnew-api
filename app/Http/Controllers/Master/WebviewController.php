@@ -42,22 +42,15 @@ class WebviewController extends Controller
                     $data = $healthPlus['description'];
                 }
             }
-            $message = "Success";
-            $status = 200;
+
         }catch(\Exception $e){
-            $message = "Fail";
-            $status = 500;
             $data = [
                 'action' => 'Get Health Plus',
                 'exception' => $e->getMessage(),
             ];
             Log::critical(json_encode($data));
         }
-        $response = [
-            'message' => $message,
-            'data' => $data
-        ];
-        return response()->json($response,$status);
+        return $data;
 
     }
 
@@ -92,23 +85,14 @@ class WebviewController extends Controller
                     $data = $privacyPolicy['description'];
                 }
             }
-            $message = "Success";
-            $status = 200;
         }catch(\Exception $e){
-            $message = "Fail";
-            $status = 500;
             $data = [
                 'action' => 'Get Health Plus',
                 'exception' => $e->getMessage(),
             ];
             Log::critical(json_encode($data));
         }
-        $response = [
-            'message' => $message,
-            'data' => $data
-        ];
-        return response()->json($response,$status);
-
+        return $data;
     }
 
     public function help(Request $request,$sgks_city, $language_id) {
@@ -141,22 +125,14 @@ class WebviewController extends Controller
                     $data = $help['description'];
                 }
             }
-            $message = "Success";
-            $status = 200;
         }catch(\Exception $e){
-            $message = "Fail";
-            $status = 500;
             $data = [
                 'action' => 'Get Health Plus',
                 'exception' => $e->getMessage(),
             ];
             Log::critical(json_encode($data));
         }
-        $response = [
-            'message' => $message,
-            'data' => $data
-        ];
-        return response()->json($response,$status);
+        return $data;
 
     }
 
@@ -190,22 +166,14 @@ class WebviewController extends Controller
                     $data = $qa['description'];
                 }
             }
-            $message = "Success";
-            $status = 200;
         }catch(\Exception $e){
-            $message = "Fail";
-            $status = 500;
             $data = [
                 'action' => 'Get Health Plus',
                 'exception' => $e->getMessage(),
             ];
             Log::critical(json_encode($data));
         }
-        $response = [
-            'message' => $message,
-            'data' => $data
-        ];
-        return response()->json($response,$status);
+        return $data;
 
     }
 
@@ -239,22 +207,14 @@ class WebviewController extends Controller
                     $data = $contactUs['description'];
                 }
             }
-            $message = "Success";
-            $status = 200;
         }catch(\Exception $e){
-            $message = "Fail";
-            $status = 500;
             $data = [
                 'action' => 'Get Health Plus',
                 'exception' => $e->getMessage(),
             ];
             Log::critical(json_encode($data));
         }
-        $response = [
-            'message' => $message,
-            'data' => $data
-        ];
-        return response()->json($response,$status);
+        return $data;
     }
 
     public function masterList(Request $request) {

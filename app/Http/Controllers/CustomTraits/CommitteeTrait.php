@@ -15,20 +15,20 @@ trait CommitteeTrait{
          try{
              $data = array();
              $ids = array();
+
+             $committeeData = array();
              if($request->has('sgks_city')){
                  $ids = Committees::where('city_id',$request->sgks_city)
                      ->pluck('id')->toArray();
              }
-             if(count($ids) > 0) {
+
+             if(count($ids) > 0 && $request->has('sgks_city')) {
                  $committeeData = Committees::where('is_active',true)
                      ->whereIn('id',$ids)
                      ->orderBy('id', 'desc')
                      ->get()->toArray();
-             } else {
-                 $committeeData = Committees::where('is_active', true)
-                     ->orderBy('id', 'desc')
-                     ->get()->toArray(); //all city data
              }
+
              $count = 0;
              foreach ($committeeData as $committee) {
                  if ($request->has('language_id')) {
