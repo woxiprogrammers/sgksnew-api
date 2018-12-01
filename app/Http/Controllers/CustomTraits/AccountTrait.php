@@ -13,11 +13,14 @@ trait AccountTrait{
     public function listing(Request $request){
          try{
              $data = array();
+             $accountData = array();
+
              if ($request->has('year') && $request->year != null) {
                  $year = $request->year;
              } else {
                  $year = date("Y");
              }
+
              $ids = Accounts::whereYear('created_at', '=', $year)->pluck('id')->toArray();
 
              if($request->has('sgks_city')){
@@ -30,14 +33,8 @@ trait AccountTrait{
                  $accountData = Accounts::orderBy('id', 'DESC')
                      ->whereIn('id', $ids)
                      ->get()->toArray();
-             } elseif ($request->has('year')){
-                 $accountData = Accounts::orderBy('id', 'DESC')
-                     ->whereYear('created_at', '=', $year)
-                     ->get()->toArray();
-             } else {
-                 $accountData = Accounts::orderBy('id', 'DESC')
-                     ->get()->toArray();
              }
+
              $count = 0;
              foreach ($accountData as $account) {
                  if ($request->has('language_id')) {

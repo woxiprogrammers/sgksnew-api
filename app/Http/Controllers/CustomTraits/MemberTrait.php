@@ -12,12 +12,14 @@ use Illuminate\Support\Facades\File;
 trait MemberTrait{
 
     public function listing(Request $request){
-         try{
+         try {
+
              $take = 10;
              $page_id = ($request->page_id);
              $skip = $page_id * $take;
              $data = array();
              $ids = array();
+             $memberData = array();
              if($request->has('sgks_city')){
                  $ids = Members::where('city_id',$request->sgks_city)
                      ->pluck('id')->toArray();
@@ -29,16 +31,18 @@ trait MemberTrait{
                                     ->pluck('id')->toArray();
              }
 
-             $memberData = Members::whereIn('id', $ids)
-                                    ->where('is_active', true)
-                                    ->skip($skip)->take($take)
-                                    ->get()->toArray();
+             if(count($ids) > 0) {
+                 $memberData = Members::whereIn('id', $ids)
+                     ->where('is_active', true)
+                     ->skip($skip)->take($take)
+                     ->get()->toArray();
+             }
+
              if(count($memberData) == 0) {
                  $page_id = "";
              } else {
                  $page_id = $page_id + 1;
              }
-
 
              foreach ($memberData as $member) {
                  if ($request->has('language_id')) {

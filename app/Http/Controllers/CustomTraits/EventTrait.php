@@ -11,13 +11,17 @@ use Illuminate\Http\Request;
 trait EventTrait{
 
     public function listing(Request $request){
-         try{
+         try {
+
              $data = array();
+             $eventData = array();
+
              if ($request->has('year') && $request->year != null) {
                  $year = $request->year;
              } else {
                  $year = date("Y");
              }
+
              $ids = Events::whereYear('created_at', '=', $year)->pluck('id')->toArray();
 
              if($request->has('sgks_city')){
@@ -25,18 +29,13 @@ trait EventTrait{
                      ->whereIn('id',$ids)
                      ->pluck('id')->toArray();
              }
-             if (count($ids) > 0) {
+
+             if (count($ids) > 0 && $request->has('sgks_city')) {
                  $eventData = Events::orderBy('id', 'DESC')
                      ->whereIn('id', $ids)
                      ->get()->toArray();
-             } elseif ($request->has('year')){
-                 $eventData = Events::orderBy('id', 'DESC')
-                     ->whereYear('created_at', '=', $year)
-                     ->get()->toArray();
-             } else {
-                 $eventData = Events::orderBy('id', 'DESC')
-                     ->get()->toArray();
              }
+
              $count = 0;
              foreach ($eventData as $event) {
                  if ($request->has('language_id')) {
