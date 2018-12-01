@@ -4,6 +4,8 @@ namespace App\Http\Controllers\Master;
 
 use App\BloodGroup;
 use App\Cities;
+use App\CityTranslations;
+use App\Members;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Log;
@@ -35,14 +37,55 @@ class MiscellaneousController extends Controller
 
     public function getCity(Request $request) {
         try{
-            $data = Cities::where('is_active',true)->get(['id as city_id','name as city_name'])->toArray();
+            $cityName = $request->search_city;
+            $cityresultData = array();
+            if($cityName != null){
+                $cityresultData = Cities::where('is_active', true)
+                      ->where('name','ilike',"%".$cityName."%")
+                      ->get(['id as city_id', 'name as city_name'])->toArray();
+            } else {
+                $cityresultData = Cities::where('is_active', true)
+                    ->get(['id as city_id', 'name as city_name'])
+                    ->toArray();
+            }
+
+            $data = array();
+            foreach ($cityresultData as $cityData) {
+                $memberCount = Members::where('city_id',$cityData['city_id'])
+                                        ->get()->count();
+                if ($request->has('language_id')) {
+                    $cityTranslationData = CityTranslations::where('language_id', $request->language_id)
+                        ->where('city_id', $cityData['city_id'])
+                        ->get()->toArray();
+                    if (count($cityTranslationData) > 0) {
+                        $data[] = array(
+                            'city_id' => $cityData['city_id'],
+                            'city_name' => ($cityTranslationData[0]['name'] != null) ? $cityTranslationData[0]['name'] : $cityData['city_name'],
+                            'city_member_count' => $memberCount,
+                        );
+                    } else {
+                        $data[] = array(
+                            'city_id' => $cityData['city_id'],
+                            'city_name' => $cityData['city_name'],
+                            'city_member_count' => $memberCount,
+                        );
+                    }
+
+                } else {
+                        $data[] = array(
+                            'city_id' => $cityData['city_id'],
+                            'city_name' => $cityData['city_name'],
+                            'city_member_count' => $memberCount,
+                    );
+                }
+            }
             $message = "Success";
             $status = 200;
         }catch(\Exception $e){
             $message = "Fail";
             $status = 500;
             $data = [
-                'action' => 'Get Bloodgroup list',
+                'action' => 'Get Cities list',
                 'exception' => $e->getMessage(),
                 'params' => $request->all()
             ];

@@ -1,6 +1,12 @@
 <?php
 namespace App\Http\Controllers\CustomTraits;
 
+use App\ClassifiedImages;
+use App\ClassifiedPackages;
+use App\Classifieds;
+use App\ClassifiedsTranslations;
+use App\Cities;
+use App\PackageRules;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Http\Request;
 
@@ -8,163 +14,98 @@ trait ClassifiedTrait{
 
     public function listing(Request $request){
          try{
-             $displayLength = 5;
-             $totalRecords = $request->page_id * $displayLength;
-             $page_id = 1;
-             $data = array(
-                       array(
-                            "id" => 1,
-                            "title" => "hello  Classified One",
-                            "class_desc" => "hi hello",
-                            "class_pkg" => "29th feb 2016 to 30th feb 2017",
-                            "created_at" => "2018",
-                            "class_type" => "My Class Type One",
-                            "class_images"=> array (
-                              "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQvg1kO4EfJf6kyCiDeA-PRp-XNwg8DqsucY_OrkHjXqKd2HB2p",
-                              "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRAhcP9INehHWSK8ML7ONJaWefGjtrObCdQw3DbXiuZ016TRUw7"
-                            )
-                        ),array(
-                            "id" => 2,
-                            "title" => "hello  Classified Two",
-                            "class_desc" => "hi hello",
-                            "class_pkg" => "29th feb 2016 to 30th feb 2017",
-                            "created_at" => "2018",
-                            "class_type" => "My Class Type One",
-                            "class_images"=> array (
-                              "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQvg1kO4EfJf6kyCiDeA-PRp-XNwg8DqsucY_OrkHjXqKd2HB2p",
-                              "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRAhcP9INehHWSK8ML7ONJaWefGjtrObCdQw3DbXiuZ016TRUw7",
-                              "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRoSdF5DygpeZoyfYV6nHcKZ32boVcmGpLIEuDzGPRMlPxp-S5H"
-                            )
-                        ),array(
-                            "id" => 3,
-                            "title" => "hello  Classified Three",
-                            "class_desc" => "hi hello",
-                            "class_pkg" => "29th feb 2016 to 30th feb 2017",
-                            "created_at" => "2018",
-                            "class_type" => "My Class Type One",
-                            "class_images"=> array (
-                              "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQvg1kO4EfJf6kyCiDeA-PRp-XNwg8DqsucY_OrkHjXqKd2HB2p",
-                              "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRAhcP9INehHWSK8ML7ONJaWefGjtrObCdQw3DbXiuZ016TRUw7"
-                            )
-                        ),array(
-                            "id" => 4,
-                            "title" => "hello  Classified Four",
-                            "class_desc" => "hi hello",
-                            "class_pkg" => "29th feb 2016 to 30th feb 2017",
-                            "created_at" => "2018",
-                            "class_type" => "My Class Type One",
-                            "class_images"=> array (
-                              "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQvg1kO4EfJf6kyCiDeA-PRp-XNwg8DqsucY_OrkHjXqKd2HB2p",
-                              "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRAhcP9INehHWSK8ML7ONJaWefGjtrObCdQw3DbXiuZ016TRUw7",
-                              "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRoSdF5DygpeZoyfYV6nHcKZ32boVcmGpLIEuDzGPRMlPxp-S5H",
-                              "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQvg1kO4EfJf6kyCiDeA-PRp-XNwg8DqsucY_OrkHjXqKd2HB2p",
-                              "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRAhcP9INehHWSK8ML7ONJaWefGjtrObCdQw3DbXiuZ016TRUw7"
-                            )
-                        ),array(
-                            "id" => 5,
-                            "title" => "hello  Classified Five",
-                            "class_desc" => "hi hello",
-                            "class_pkg" => "29th feb 2016 to 30th feb 2017",
-                            "created_at" => "2018",
-                            "class_type" => "My Class Type One",
-                            "class_images"=> array (
-                              "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQvg1kO4EfJf6kyCiDeA-PRp-XNwg8DqsucY_OrkHjXqKd2HB2p",
-                              "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRAhcP9INehHWSK8ML7ONJaWefGjtrObCdQw3DbXiuZ016TRUw7"
-                            )
-                        ),array(
-                            "id" => 6,
-                            "title" => "hello  Classified Six",
-                            "class_desc" => "hi hello",
-                            "class_pkg" => "29th feb 2016 to 30th feb 2017",
-                            "created_at" => "2018",
-                            "class_type" => "My Class Type One",
-                            "class_images"=> array (
-                              "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQvg1kO4EfJf6kyCiDeA-PRp-XNwg8DqsucY_OrkHjXqKd2HB2p",
-                              "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRAhcP9INehHWSK8ML7ONJaWefGjtrObCdQw3DbXiuZ016TRUw7",
-                              "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRoSdF5DygpeZoyfYV6nHcKZ32boVcmGpLIEuDzGPRMlPxp-S5H"
-                            )
-                        ),array(
-                            "id" => 7,
-                            "title" => "hello  Classified Seven",
-                            "class_desc" => "hi hello",
-                            "class_pkg" => "29th feb 2016 to 30th feb 2017",
-                            "created_at" => "2018",
-                            "class_type" => "My Class Type One",
-                            "class_images"=> array (
-                              "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQvg1kO4EfJf6kyCiDeA-PRp-XNwg8DqsucY_OrkHjXqKd2HB2p",
-                              "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRAhcP9INehHWSK8ML7ONJaWefGjtrObCdQw3DbXiuZ016TRUw7"
-                            )
-                        ),array(
-                            "id" => 8,
-                            "title" => "hello  Classified Eight",
-                            "class_desc" => "hi hello",
-                            "class_pkg" => "29th feb 2016 to 30th feb 2017",
-                            "created_at" => "2018",
-                            "class_type" => "My Class Type One",
-                            "class_images"=> array (
-                              "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQvg1kO4EfJf6kyCiDeA-PRp-XNwg8DqsucY_OrkHjXqKd2HB2p",
-                              "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRAhcP9INehHWSK8ML7ONJaWefGjtrObCdQw3DbXiuZ016TRUw7",
-                              "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRoSdF5DygpeZoyfYV6nHcKZ32boVcmGpLIEuDzGPRMlPxp-S5H",
-                              "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQvg1kO4EfJf6kyCiDeA-PRp-XNwg8DqsucY_OrkHjXqKd2HB2p",
-                              "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRAhcP9INehHWSK8ML7ONJaWefGjtrObCdQw3DbXiuZ016TRUw7"
-                            )
-                        ),array(
-                            "id" => 9,
-                            "title" => "hello  Classified One 11",
-                            "class_desc" => "hi hello",
-                            "class_pkg" => "29th feb 2016 to 30th feb 2017",
-                            "created_at" => "2018",
-                            "class_type" => "My Class Type One",
-                            "class_images"=> array (
-                              "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQvg1kO4EfJf6kyCiDeA-PRp-XNwg8DqsucY_OrkHjXqKd2HB2p",
-                              "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRAhcP9INehHWSK8ML7ONJaWefGjtrObCdQw3DbXiuZ016TRUw7"
-                            )
-                        ),array(
-                            "id" => 10,
-                            "title" => "hello  Classified Two 22",
-                            "class_desc" => "hi hello",
-                            "class_pkg" => "29th feb 2016 to 30th feb 2017",
-                            "created_at" => "2018",
-                            "class_type" => "My Class Type One",
-                            "class_images"=> array (
-                              "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQvg1kO4EfJf6kyCiDeA-PRp-XNwg8DqsucY_OrkHjXqKd2HB2p",
-                              "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRAhcP9INehHWSK8ML7ONJaWefGjtrObCdQw3DbXiuZ016TRUw7",
-                              "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRoSdF5DygpeZoyfYV6nHcKZ32boVcmGpLIEuDzGPRMlPxp-S5H"
-                            )
-                        ),array(
-                            "id" => 11,
-                            "title" => "hello  Classified Three 33",
-                            "class_desc" => "hi hello",
-                            "class_pkg" => "29th feb 2016 to 30th feb 2017",
-                            "created_at" => "2018",
-                            "class_type" => "My Class Type One",
-                            "class_images"=> array (
-                              "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQvg1kO4EfJf6kyCiDeA-PRp-XNwg8DqsucY_OrkHjXqKd2HB2p",
-                              "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRAhcP9INehHWSK8ML7ONJaWefGjtrObCdQw3DbXiuZ016TRUw7"
-                            )
-                        ),array(
-                            "id" => 12,
-                            "title" => "hello  Classified Four 44",
-                            "class_desc" => "hi hello",
-                            "class_pkg" => "29th feb 2016 to 30th feb 2017",
-                            "created_at" => "2018",
-                            "class_type" => "My Class Type One",
-                            "class_images"=> array (
-                              "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQvg1kO4EfJf6kyCiDeA-PRp-XNwg8DqsucY_OrkHjXqKd2HB2p",
-                              "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRAhcP9INehHWSK8ML7ONJaWefGjtrObCdQw3DbXiuZ016TRUw7",
-                              "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRoSdF5DygpeZoyfYV6nHcKZ32boVcmGpLIEuDzGPRMlPxp-S5H",
-                              "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQvg1kO4EfJf6kyCiDeA-PRp-XNwg8DqsucY_OrkHjXqKd2HB2p",
-                              "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRAhcP9INehHWSK8ML7ONJaWefGjtrObCdQw3DbXiuZ016TRUw7"
-                            )
-                        )
-                      );
+             $take = 10;
+             $page_id = ($request->page_id);
+             $skip = $page_id * $take;
+             $data = array();
+             $ids = array();
+
+             if($request->has('sgks_city')){
+                 $ids = Classifieds::where('city_id',$request->sgks_city)
+                     ->pluck('id')->toArray();
+             }
+             if (count($ids) < 1) {
+                 $classifiedData = Classifieds::orderBy('id', 'desc')
+                     ->where('is_active', true)
+                     ->skip($skip)->take($take)
+                     ->get()->toArray(); //all city data
+             } else {
+                 $classifiedData = Classifieds::orderBy('id', 'desc')
+                     ->whereIn('id', $ids)
+                     ->where('is_active', true)
+                     ->skip($skip)->take($take)
+                     ->get()->toArray();
+             }
+
+             if(count($classifiedData) == 0) {
+                 $page_id = "";
+             } else {
+                 $page_id = $page_id + 1;
+             }
+
+             $count = 0;
+             foreach ($classifiedData as $classified) {
+                 $classifiedPackage = ClassifiedPackages::where('id',$classified['package_id'])->first();
+                 $classifiedPackageType = PackageRules::where('id',$classifiedPackage['id'])->first();
+
+                 if ($request->has('language_id')) {
+                     $classifiedTranslationData = ClassifiedsTranslations::where('language_id', $request->language_id)
+                         ->where('classified_id', $classified['id'])
+                         ->get()->toArray();
+                     if (count($classifiedTranslationData) > 0) {
+                         $data[] = array(
+                             'id' => $classified['id'],
+                             'title' => ($classifiedTranslationData[0]['title'] != null) ? $classifiedTranslationData[0]['title'] : $classified['title'],
+                             'class_desc' => ($classifiedTranslationData[0]['classified_desc'] != null) ? $classifiedTranslationData[0]['classified_desc'] : $classified['description'],
+                             'class_pkg' => $classifiedPackage['slug'],
+                             'class_type' => $classifiedPackageType['package_desc'],
+                             'city' => Cities::where('id', $classified['city_id'])->value('name'),
+                             'created_at' => date('Y',strtotime($classified['created_at'])),
+                         );
+                     } else {
+                         $data[] = array(
+                             'id' => $classified['id'],
+                             'title' => $classified['title'],
+                             'class_desc' => $classified['description'],
+                             'class_pkg' => $classifiedPackage['slug'],
+                             'class_type' => $classifiedPackageType['package_desc'],
+                             'city' => Cities::where('id', $classified['city_id'])->value('name'),
+                             'created_at' => date('Y',strtotime($classified['created_at'])),
+                         );
+                     }
+
+                 } else {
+                     $data[] = array(
+                         'id' => $classified['id'],
+                         'title' => $classified['title'],
+                         'class_desc' => $classified['description'],
+                         'class_pkg' => $classifiedPackage['slug'],
+                         'class_type' => $classifiedPackageType['package_desc'],
+                         'city' => Cities::where('id', $classified['city_id'])->value('name'),
+                         'created_at' => date('Y',strtotime($classified['created_at'])),
+                     );
+                 }
+
+                 $classifiedImgData = array();
+                 $classifiedImageData = ClassifiedImages::where('classified_id', $classified['id'])
+                     ->orderBy('id', 'ASC')
+                     ->get()->toArray();
+                 foreach ($classifiedImageData as $classifiedImage) {
+                     $classifiedImg = null;
+                     $createClassifiedDirectoryName = sha1($classified['id']);
+                     $classifiedImg = env('SGKSWEB_BASEURL') . env('CLASSIFIED_IMAGES_UPLOAD') . DIRECTORY_SEPARATOR . $createClassifiedDirectoryName . DIRECTORY_SEPARATOR . $classifiedImage['image_url'];
+                     $classifiedImgData[] = $classifiedImg;
+                 }
+                 $data[$count]['class_images'] = $classifiedImgData;
+                 $count++;
+             }
             $message = "Success";
             $status = 200;
         }catch(\Exception $e){
-            $message = "Fail";
+            $message = "Something went wrong";
             $status = 500;
             $data = [
-                'action' => 'Get all members',
+                'action' => 'Get all classified',
                 'exception' => $e->getMessage(),
                 'params' => $request->all()
             ];

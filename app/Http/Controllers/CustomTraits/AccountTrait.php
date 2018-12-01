@@ -4,6 +4,7 @@ namespace App\Http\Controllers\CustomTraits;
 use App\AccountImages;
 use App\Accounts;
 use App\AccountsTranslations;
+use App\Cities;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Http\Request;
 
@@ -12,21 +13,28 @@ trait AccountTrait{
     public function listing(Request $request){
          try{
              $data = array();
-             if ($request->has('year')) {
+             $accountData = array();
+
+             if ($request->has('year') && $request->year != null) {
                  $year = $request->year;
              } else {
                  $year = date("Y");
              }
+
              $ids = Accounts::whereYear('created_at', '=', $year)->pluck('id')->toArray();
+
+             if($request->has('sgks_city')){
+                 $ids = Accounts::where('city_id',$request->sgks_city)
+                     ->whereIn('id',$ids)
+                     ->pluck('id')->toArray();
+             }
 
              if (count($ids) > 0) {
                  $accountData = Accounts::orderBy('id', 'DESC')
-                     ->get()->toArray(); //all city data
-             } else {
-                 $accountData = Accounts::orderBy('id', 'DESC')
                      ->whereIn('id', $ids)
-                     ->get()->toArray(); //all city data
+                     ->get()->toArray();
              }
+
              $count = 0;
              foreach ($accountData as $account) {
                  if ($request->has('language_id')) {
@@ -38,6 +46,7 @@ trait AccountTrait{
                              'id' => $account['id'],
                              'name' => ($accountTranslationData[0]['name'] != null) ? $accountTranslationData[0]['name'] : $account['name'],
                              'description' => ($accountTranslationData[0]['description']) ? $accountTranslationData[0]['description'] : $account['description'],
+                             'city_name' => Cities::where('id',$account['city_id'])->value('name'),
                              'created_at' => $account['created_at'],
                              'updated_at' => $account['updated_at']
                          );
@@ -46,6 +55,7 @@ trait AccountTrait{
                              'id' => $account['id'],
                              'name' => $account['name'],
                              'description' => $account['description'],
+                             'city_name' => Cities::where('id',$account['city_id'])->value('name'),
                              'created_at' => $account['created_at'],
                              'updated_at' => $account['updated_at']
                          );
@@ -55,6 +65,7 @@ trait AccountTrait{
                          'id' => $account['id'],
                          'name' => $account['name'],
                          'description' => $account['description'],
+                         'city_name' => Cities::where('id',$account['city_id'])->value('name'),
                          'created_at' => $account['created_at'],
                          'updated_at' => $account['updated_at']
                      );
