@@ -17,6 +17,7 @@ trait MessageTrait{
             $skip = $page_id * $take;
             $data = array();
             $ids = array();
+            $png = '.png';
             if($request->has('sgks_city')){
                 $ids = Messages::where('city_id',$request->sgks_city)
                     ->pluck('id')->toArray();
@@ -37,6 +38,7 @@ trait MessageTrait{
             }
 
             foreach ($messageData as $sgksMessage) {
+                $messageType = MessageTypes::where('id',$sgksMessage['message_type_id'])->value('slug');
                 if ($request->has('language_id')) {
                     $messageTranslationData = MessageTranslations::where('language_id', $request->language_id)
                         ->where('message_id', $sgksMessage['id'])
@@ -46,7 +48,8 @@ trait MessageTrait{
                             'id' => $sgksMessage['id'],
                             'title' => ($messageTranslationData[0]['title'] != null) ?  $messageTranslationData[0]['title'] : $sgksMessage['title'],
                             'msg_desc' => ($messageTranslationData[0]['description'] != null) ? $messageTranslationData[0]['description'] : $sgksMessage['description'],
-                            'msg_img' => env('SGKSWEB_BASEURL').env('MESSAGE_IMAGES_UPLOAD'). DIRECTORY_SEPARATOR.sha1($sgksMessage['id']).DIRECTORY_SEPARATOR.$sgksMessage['image_url'],
+                            'msg_img' => ($sgksMessage['image_url'] != null) ? env('SGKSWEB_BASEURL').env('MESSAGE_IMAGES_UPLOAD'). DIRECTORY_SEPARATOR.sha1($sgksMessage['id']).DIRECTORY_SEPARATOR.$sgksMessage['image_url'] :
+                                env('SGKSWEB_BASEURL').env('MESSAGE_TYPE_IMAGES').DIRECTORY_SEPARATOR.$messageType.$png,
                             'msg_type' => MessageTypes::where('id' , $sgksMessage['message_type_id'])->value('slug'),
                             'sgks_city' => Cities::where('id', $sgksMessage['city_id'])->value('name'),
                         );
@@ -55,7 +58,8 @@ trait MessageTrait{
                             'id' => $sgksMessage['id'],
                             'title' => $sgksMessage['title'],
                             'msg_desc' => $sgksMessage['description'],
-                            'msg_img' => env('SGKSWEB_BASEURL').env('MESSAGE_IMAGES_UPLOAD'). DIRECTORY_SEPARATOR.sha1($sgksMessage['id']).DIRECTORY_SEPARATOR.$sgksMessage['image_url'],
+                            'msg_img' => ($sgksMessage['image_url'] != null) ? env('SGKSWEB_BASEURL').env('MESSAGE_IMAGES_UPLOAD'). DIRECTORY_SEPARATOR.sha1($sgksMessage['id']).DIRECTORY_SEPARATOR.$sgksMessage['image_url'] :
+                                env('SGKSWEB_BASEURL').env('MESSAGE_TYPE_IMAGES').DIRECTORY_SEPARATOR.$messageType.$png,
                             'msg_type' => MessageTypes::where('id' , $sgksMessage['message_type_id'])->value('slug'),
                             'sgks_city' => Cities::where('id', $sgksMessage['city_id'])->value('name'),
                         );
@@ -66,7 +70,8 @@ trait MessageTrait{
                         'id' => $sgksMessage['id'],
                         'title' => $sgksMessage['title'],
                         'msg_desc' => $sgksMessage['description'],
-                        'msg_img' => env('SGKSWEB_BASEURL').env('MESSAGE_IMAGES_UPLOAD'). DIRECTORY_SEPARATOR.sha1($sgksMessage['id']).DIRECTORY_SEPARATOR.$sgksMessage['image_url'],
+                        'msg_img' => ($sgksMessage['image_url'] != null) ? env('SGKSWEB_BASEURL').env('MESSAGE_IMAGES_UPLOAD'). DIRECTORY_SEPARATOR.sha1($sgksMessage['id']).DIRECTORY_SEPARATOR.$sgksMessage['image_url'] :
+                            env('SGKSWEB_BASEURL').env('MESSAGE_TYPE_IMAGES').DIRECTORY_SEPARATOR.$messageType.$png,
                         'msg_type' => MessageTypes::where('id' , $sgksMessage['message_type_id'])->value('slug'),
                         'sgks_city' => Cities::where('id', $sgksMessage['city_id'])->value('name'),
                     );
