@@ -26,12 +26,16 @@ trait AccountTrait{
                      ->pluck('id')->toArray();
              }
 
-             if (count($ids) < 1) {
+             if (count($ids) > 0) {
                  $accountData = Accounts::orderBy('id', 'DESC')
+                     ->whereIn('id', $ids)
+                     ->get()->toArray();
+             } elseif ($request->has('year')){
+                 $accountData = Accounts::orderBy('id', 'DESC')
+                     ->whereYear('created_at', '=', $year)
                      ->get()->toArray();
              } else {
                  $accountData = Accounts::orderBy('id', 'DESC')
-                     ->whereIn('id', $ids)
                      ->get()->toArray();
              }
              $count = 0;
