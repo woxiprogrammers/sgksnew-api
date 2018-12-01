@@ -29,6 +29,10 @@ trait EventTrait{
                  $eventData = Events::orderBy('id', 'DESC')
                      ->whereIn('id', $ids)
                      ->get()->toArray();
+             } elseif ($request->has('year')){
+                 $eventData = Events::orderBy('id', 'DESC')
+                     ->whereYear('created_at', '=', $year)
+                     ->get()->toArray();
              } else {
                  $eventData = Events::orderBy('id', 'DESC')
                      ->get()->toArray();
