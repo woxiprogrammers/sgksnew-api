@@ -188,5 +188,64 @@ trait MemberTrait{
         return response()->json($response,$status);
     }
 
+    public function editMember(Request $request, $id) {
+        try{
+            $data = $request->all();
+            $membersData['first_name'] = $data['first_name'];
+            $membersData['middle_name'] = $data['middle_name'];
+            $membersData['last_name'] = $data['last_name'];
+            if(array_key_exists('gender',$data)){
+                $membersData['gender'] = $data['gender'];
+            }
+            $membersData['address'] = $data['address'];
+            $membersData['date_of_birth'] = $data['date_of_birth'];
+            $membersData['blood_group_id'] = $data['blood_group_id'];
+            $membersData['mobile'] = $data['mobile'];
+            $membersData['email'] = $data['email'];
+            $membersData['city_id'] = $data['city_id'];
+            $membersData['longitude'] = null; // currently No functionality
+            $membersData['latitude'] = null;
+            Members::where('id',$id)->update($membersData);
 
+            if($request->has('profile_images')){
+                $member = Members::where('id',$id)->first();
+                $createMemberDirectoryName = sha1($id);
+                $tempUploadFile = env('WEB_PUBLIC_PATH').env('MEMBER_TEMP_IMAGE_UPLOAD').$data['profile_images'];
+                if(File::exists($tempUploadFile)){
+                    $imageUploadNewPath = env('WEB_PUBLIC_PATH').env('MEMBER_IMAGE_UPLOAD').DIRECTORY_SEPARATOR.$createMemberDirectoryName;
+                    if($member['profile_image'] != null){
+                        unlink(env('WEB_PUBLIC_PATH').env('MEMBER_IMAGE_UPLOAD').DIRECTORY_SEPARATOR.$createMemberDirectoryName.DIRECTORY_SEPARATOR.$member['profile_image']);
+                    }
+                    if(!file_exists($imageUploadNewPath)) {
+                        File::makeDirectory($imageUploadNewPath, $mode = 0777, true, true);
+                    }
+                    $imageUploadNewPath .= DIRECTORY_SEPARATOR.$data['profile_images'];
+                    File::move($tempUploadFile,$imageUploadNewPath);
+                    $member->update([
+                        'profile_image' => $data['profile_images'],
+                    ]);
+                }
+            }
+            $message = "Member Updated Successfully";
+            $status = 200;
+            $response = [
+                'message' => $message,
+            ];
+            return response()->json($response,$status);
+
+        }catch(\Exception $exception){
+            $message = "Fail";
+            $status = 500;
+            $data = [
+                'action' => 'Update Member',
+                'exception' => $exception->getMessage(),
+                'params' => $request->all()
+            ];
+            Log::critical(json_encode($data));
+        }
+        $response = [
+            'message' => $message,
+        ];
+        return response()->json($response,$status);
+    }
 }
