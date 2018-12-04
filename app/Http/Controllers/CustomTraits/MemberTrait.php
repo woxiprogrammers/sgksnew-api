@@ -52,14 +52,14 @@ trait MemberTrait{
                      if (count($memDataInOtherLang) > 0) {
                          $data[] = array(
                              'id' => $member['id'],
-                             'first_name' => ucwords($memDataInOtherLang[0]['first_name']),
-                             'middle_name' => ucwords($memDataInOtherLang[0]['middle_name']),
-                             'last_name' => ucwords($memDataInOtherLang[0]['last_name']),
-                             'address' => ucwords($memDataInOtherLang[0]['address']),
+                             'first_name' => $memDataInOtherLang[0]['first_name'],
+                             'middle_name' => $memDataInOtherLang[0]['middle_name'],
+                             'last_name' => $memDataInOtherLang[0]['last_name'],
+                             'address' => $memDataInOtherLang[0]['address'],
                              'city' => Cities::where('id', $member['city_id'])->value('name'),
                              'gender' => $member['gender'],
                              'mobile' => $member['mobile'],
-                             'date_of_birth' => $member['date_of_birth'],
+                             'date_of_birth' => date('d M Y',strtotime($member['date_of_birth'])),
                              'email' => $member['email'],
                              'blood_group' => BloodGroup::where('id', $member['blood_group_id'])->value('blood_group_type'),
                              'latitude' => $member['latitude'],
@@ -78,7 +78,7 @@ trait MemberTrait{
                              'city' => Cities::where('id', $member['city_id'])->value('name'),
                              'gender' => $member['gender'],
                              'mobile' => $member['mobile'],
-                             'date_of_birth' => $member['date_of_birth'],
+                             'date_of_birth' => date('d M Y',strtotime($member['date_of_birth'])),
                              'email' => $member['email'],
                              'blood_group' => BloodGroup::where('id', $member['blood_group_id'])->value('blood_group_type'),
                              'latitude' => $member['latitude'],
@@ -99,7 +99,7 @@ trait MemberTrait{
                          'city' => Cities::where('id', $member['city_id'])->value('name'),
                          'gender' => $member['gender'],
                          'mobile' => $member['mobile'],
-                         'date_of_birth' => $member['date_of_birth'],
+                         'date_of_birth' => date('d M Y',strtotime($member['date_of_birth'])),
                          'email' => $member['email'],
                          'blood_group' => BloodGroup::where('id', $member['blood_group_id'])->value('blood_group_type'),
                          'latitude' => $member['latitude'],
@@ -188,9 +188,10 @@ trait MemberTrait{
         return response()->json($response,$status);
     }
 
-    public function editMember(Request $request, $id) {
+    public function editMember(Request $request) {
         try{
             $data = $request->all();
+            $id = $data['member_id'];
             $membersData['first_name'] = $data['first_name'];
             $membersData['middle_name'] = $data['middle_name'];
             $membersData['last_name'] = $data['last_name'];
