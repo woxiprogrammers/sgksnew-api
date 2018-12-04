@@ -15,7 +15,7 @@ class MiscellaneousController extends Controller
 {
     public function getBloodGroupMaster(Request $request) {
         try{
-            $data = BloodGroup::get(['id as blood_id','blood_group_type as blood_group'])->toArray();
+            $data = BloodGroup::orderBy('id','ASC')->get(['id as blood_id','blood_group_type as blood_group'])->toArray();
             $message = "Success";
             $status = 200;
         }catch(\Exception $e){

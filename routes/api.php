@@ -23,7 +23,7 @@ Route::group(['prefix' => 'v1'], function() {
 	Route::group(['prefix' => 'sgks-member'], function() {
 		Route::post('listing', array('uses' => 'Master\MemberController@listing'));
         Route::post('add-member', array('uses' => 'Master\MemberController@addMember'));
-        Route::post('edit-member/{id}', array('uses' => 'Master\MemberController@editMember'));
+        Route::post('edit-member', array('uses' => 'Master\MemberController@editMember'));
 	});
 
 	Route::group(['prefix' => 'sgks-event'], function() {
