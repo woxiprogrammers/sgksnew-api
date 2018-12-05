@@ -57,11 +57,13 @@ trait MemberTrait{
                              'last_name' => $memDataInOtherLang[0]['last_name'],
                              'address' => $memDataInOtherLang[0]['address'],
                              'city' => Cities::where('id', $member['city_id'])->value('name'),
+                             'city_id' => $member['city_id'],
                              'gender' => $member['gender'],
                              'mobile' => $member['mobile'],
-                             'date_of_birth' => date('d M Y',strtotime($member['date_of_birth'])),
+                             'date_of_birth' => date('d m Y',strtotime($member['date_of_birth'])),
                              'email' => $member['email'],
                              'blood_group' => BloodGroup::where('id', $member['blood_group_id'])->value('blood_group_type'),
+                             'blood_group_id' => $member['blood_group_id'],
                              'latitude' => $member['latitude'],
                              'longitude' => $member['longitude'],
                              'member_image_url' => env('SGKSWEB_BASEURL').env('MEMBER_IMAGE_UPLOAD').sha1($member['id']).DIRECTORY_SEPARATOR.$member['profile_image'],
@@ -76,11 +78,13 @@ trait MemberTrait{
                              'last_name' => ucwords($member['last_name']),
                              'address' => ucwords($member['address']),
                              'city' => Cities::where('id', $member['city_id'])->value('name'),
+                             'city_id' => $member['city_id'],
                              'gender' => $member['gender'],
                              'mobile' => $member['mobile'],
-                             'date_of_birth' => date('d M Y',strtotime($member['date_of_birth'])),
+                             'date_of_birth' => date('d m Y',strtotime($member['date_of_birth'])),
                              'email' => $member['email'],
                              'blood_group' => BloodGroup::where('id', $member['blood_group_id'])->value('blood_group_type'),
+                             'blood_group_id' => $member['blood_group_id'],
                              'latitude' => $member['latitude'],
                              'longitude' => $member['longitude'],
                              'member_image_url' => env('SGKSWEB_BASEURL').env('MEMBER_IMAGE_UPLOAD').sha1($member['id']).DIRECTORY_SEPARATOR.$member['profile_image'],
@@ -97,11 +101,13 @@ trait MemberTrait{
                          'last_name' => ucwords($member['last_name']),
                          'address' => ucwords($member['address']),
                          'city' => Cities::where('id', $member['city_id'])->value('name'),
+                         'city_id' => $member['city_id'],
                          'gender' => $member['gender'],
                          'mobile' => $member['mobile'],
-                         'date_of_birth' => date('d M Y',strtotime($member['date_of_birth'])),
+                         'date_of_birth' => date('d m Y',strtotime($member['date_of_birth'])),
                          'email' => $member['email'],
                          'blood_group' => BloodGroup::where('id', $member['blood_group_id'])->value('blood_group_type'),
+                         'blood_group_id' => $member['blood_group_id'],
                          'latitude' => $member['latitude'],
                          'longitude' => $member['longitude'],
                          'member_image_url' => env('SGKSWEB_BASEURL').env('MEMBER_IMAGE_UPLOAD').sha1($member['id']).DIRECTORY_SEPARATOR.$member['profile_image'],
@@ -208,7 +214,7 @@ trait MemberTrait{
             $membersData['latitude'] = null;
             Members::where('id',$id)->update($membersData);
 
-            if($request->has('profile_images')){
+            if($request->has('profile_images') && $data['profile_images'] != ""){
                 $member = Members::where('id',$id)->first();
                 $createMemberDirectoryName = sha1($id);
                 $tempUploadFile = env('WEB_PUBLIC_PATH').env('MEMBER_TEMP_IMAGE_UPLOAD').$data['profile_images'];
