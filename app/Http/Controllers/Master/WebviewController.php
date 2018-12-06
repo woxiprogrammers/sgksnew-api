@@ -306,10 +306,16 @@ class WebviewController extends Controller
 			$data = $request->all();
 			$suggestionData['description'] = $data['suggestion_message'];
 			$suggestionData['city_id'] = $data['sgks_city'];
-            $suggestionData['suggestion_category_id'] = $data['suggestion_cat'];
-            if($data['suggestion_type'] == "suggestion") {
-                $suggestionData['suggestion_type_id'] = SuggestionType::where('slug','suggestion')->value('id');
+			if($request->has('suggestion_cat') && $data['suggestion_cat'] != "") {
+                $suggestionData['suggestion_category_id'] = $data['suggestion_cat'];
             } else {
+                $suggestionData['suggestion_category_id'] = SuggestionCategory::where('slug','other')->value('id');
+            }
+            if($data['suggestion_type'] == true || $data['suggestion_type'] == "true") {
+                $suggestionData['suggestion_type_id'] = SuggestionType::where('slug','suggestion')->value('id');
+            }
+            if($data['suggestion_type'] == false || $data['suggestion_type'] == "false")
+            {
                 $suggestionData['suggestion_type_id'] = SuggestionType::where('slug','complaint')->value('id');
             }
             Suggestion::create($suggestionData);

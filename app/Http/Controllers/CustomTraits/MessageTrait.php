@@ -52,7 +52,7 @@ trait MessageTrait{
                                 env('SGKSWEB_BASEURL').env('MESSAGE_TYPE_IMAGES').DIRECTORY_SEPARATOR.$messageType.$png,
                             'msg_type' => MessageTypes::where('id' , $sgksMessage['message_type_id'])->value('slug'),
                             'sgks_city' => Cities::where('id', $sgksMessage['city_id'])->value('name'),
-                            'message_date' => date('d M Y',strtotime($sgksMessage['message_date'])),
+                            'message_date' => date('jS M Y',strtotime($sgksMessage['message_date'])),
                         );
                     } else {
                         $data[] = array(
@@ -63,7 +63,7 @@ trait MessageTrait{
                                 env('SGKSWEB_BASEURL').env('MESSAGE_TYPE_IMAGES').DIRECTORY_SEPARATOR.$messageType.$png,
                             'msg_type' => MessageTypes::where('id' , $sgksMessage['message_type_id'])->value('slug'),
                             'sgks_city' => Cities::where('id', $sgksMessage['city_id'])->value('name'),
-                            'message_date' => date('d M Y',strtotime($sgksMessage['message_date'])),
+                            'message_date' => date('jS M Y',strtotime($sgksMessage['message_date'])),
                         );
                     }
 
@@ -76,7 +76,7 @@ trait MessageTrait{
                             env('SGKSWEB_BASEURL').env('MESSAGE_TYPE_IMAGES').DIRECTORY_SEPARATOR.$messageType.$png,
                         'msg_type' => MessageTypes::where('id' , $sgksMessage['message_type_id'])->value('slug'),
                         'sgks_city' => Cities::where('id', $sgksMessage['city_id'])->value('name'),
-                        'message_date' => date('d M Y',strtotime($sgksMessage['message_date'])),
+                        'message_date' => date('jS M Y',strtotime($sgksMessage['message_date'])),
                     );
                 }
 
