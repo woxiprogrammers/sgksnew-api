@@ -53,20 +53,24 @@ class MiscellaneousController extends Controller
             foreach ($cityresultData as $cityData) {
                 $memberCount = Members::where('city_id',$cityData['city_id'])
                                         ->get()->count();
-                if ($request->has('language_id')) {
+                $cityTranslationData = CityTranslations::where('city_id', $cityData['city_id'])
+                    ->get()->toArray();
+                if ($request->has('language_id') && $request->language_id == $cityTranslationData[0]['language_id']) {
                     $cityTranslationData = CityTranslations::where('language_id', $request->language_id)
                         ->where('city_id', $cityData['city_id'])
                         ->get()->toArray();
                     if (count($cityTranslationData) > 0) {
                         $data[] = array(
                             'city_id' => $cityData['city_id'],
-                            'city_name' => ($cityTranslationData[0]['name'] != null) ? $cityTranslationData[0]['name'] : $cityData['city_name'],
+                            'city_name' =>  $cityData['city_name'],
+                            'city_name_gj' => $cityTranslationData[0]['name'],
                             'city_member_count' => $memberCount,
                         );
                     } else {
                         $data[] = array(
                             'city_id' => $cityData['city_id'],
                             'city_name' => $cityData['city_name'],
+                            'city_name_gj' => $cityTranslationData[0]['name'],
                             'city_member_count' => $memberCount,
                         );
                     }
@@ -75,6 +79,7 @@ class MiscellaneousController extends Controller
                         $data[] = array(
                             'city_id' => $cityData['city_id'],
                             'city_name' => $cityData['city_name'],
+                            'city_name_gj' => $cityTranslationData[0]['name'],
                             'city_member_count' => $memberCount,
                     );
                 }
