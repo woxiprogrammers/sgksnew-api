@@ -57,6 +57,7 @@ Route::group(['prefix' => 'v1'], function() {
 
 		Route::post('addmetosgks', array('uses' => 'Master\WebviewController@addMeToSgks'));
 		Route::post('sgks-suggestion', array('uses' => 'Master\WebviewController@sgksSuggestion'));
+        Route::get('suggestion-category', array('uses' => 'Master\WebviewController@getSuggestionCategory'));
 		Route::get('sgks-version', array('uses' => 'Master\WebviewController@minimumSupportedVersion'));
 
 	});
