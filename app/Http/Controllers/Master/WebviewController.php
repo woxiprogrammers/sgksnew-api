@@ -3,6 +3,9 @@
 namespace App\Http\Controllers\Master;
 
 use App\DrawerWebviewDetailsTranslations;
+use App\Suggestion;
+use App\SuggestionCategory;
+use App\SuggestionType;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\DrawerWebview;
@@ -300,19 +303,51 @@ class WebviewController extends Controller
 
 	public function sgksSuggestion(Request $request) {
     	try{
-            $is_suggestion = $request->is_suggestion;
-			$suggestion_cat = $request->suggestion_cat;
-			$sgks_city = $request->sgks_city;
-			$suggestion_message = $request->suggestion_message;
-
-			$data = null;
+			$data = $request->all();
+			$suggestionData['description'] = $data['suggestion_message'];
+			$suggestionData['city_id'] = $data['sgks_city'];
+			if($request->has('suggestion_cat') && $data['suggestion_cat'] != "") {
+                $suggestionData['suggestion_category_id'] = $data['suggestion_cat'];
+            } else {
+                $suggestionData['suggestion_category_id'] = SuggestionCategory::where('slug','other')->value('id');
+            }
+            if($request->has('suggestion_type')){
+                $suggestionData['suggestion_type_id'] = SuggestionType::where('slug',$data['suggestion_type'])->value('id');
+            }
+            Suggestion::create($suggestionData);
             $message = "Thanks for your suggestion.";
+            $status = 200;
+            $response = [
+                'message' => $message,
+            ];
+            return response()->json($response,$status);
+
+        }catch(\Exception $exception){
+            $message = "Fail";
+            $status = 500;
+            $data = [
+                'action' => 'Suggestion',
+                'exception' => $exception->getMessage(),
+                'params' => $request->all()
+            ];
+            Log::critical(json_encode($data));
+        }
+        $response = [
+            'message' => $message,
+        ];
+        return response()->json($response,$status);
+	}
+
+    public function getSuggestionCategory(Request $request) {
+        try{
+            $data = SuggestionCategory::orderBy('id','ASC')->get(['id as category_id','name as category'])->toArray();
+            $message = "Success";
             $status = 200;
         }catch(\Exception $e){
             $message = "Fail";
             $status = 500;
             $data = [
-                'action' => 'SGKS Suggestiobn',
+                'action' => 'Get Category list',
                 'exception' => $e->getMessage(),
                 'params' => $request->all()
             ];
@@ -323,7 +358,7 @@ class WebviewController extends Controller
             'data' => $data
         ];
         return response()->json($response,$status);
-	}
+    }
 
     public function minimumSupportedVersion(Request $request){
         try{

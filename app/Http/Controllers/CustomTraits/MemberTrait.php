@@ -52,16 +52,18 @@ trait MemberTrait{
                      if (count($memDataInOtherLang) > 0) {
                          $data[] = array(
                              'id' => $member['id'],
-                             'first_name' => ucwords($memDataInOtherLang[0]['first_name']),
-                             'middle_name' => ucwords($memDataInOtherLang[0]['middle_name']),
-                             'last_name' => ucwords($memDataInOtherLang[0]['last_name']),
-                             'address' => ucwords($memDataInOtherLang[0]['address']),
+                             'first_name' => $memDataInOtherLang[0]['first_name'],
+                             'middle_name' => $memDataInOtherLang[0]['middle_name'],
+                             'last_name' => $memDataInOtherLang[0]['last_name'],
+                             'address' => $memDataInOtherLang[0]['address'],
                              'city' => Cities::where('id', $member['city_id'])->value('name'),
+                             'city_id' => $member['city_id'],
                              'gender' => $member['gender'],
                              'mobile' => $member['mobile'],
-                             'date_of_birth' => $member['date_of_birth'],
+                             'date_of_birth' => date('d-m-Y',strtotime($member['date_of_birth'])),
                              'email' => $member['email'],
                              'blood_group' => BloodGroup::where('id', $member['blood_group_id'])->value('blood_group_type'),
+                             'blood_group_id' => $member['blood_group_id'],
                              'latitude' => $member['latitude'],
                              'longitude' => $member['longitude'],
                              'member_image_url' => env('SGKSWEB_BASEURL').env('MEMBER_IMAGE_UPLOAD').sha1($member['id']).DIRECTORY_SEPARATOR.$member['profile_image'],
@@ -76,11 +78,13 @@ trait MemberTrait{
                              'last_name' => ucwords($member['last_name']),
                              'address' => ucwords($member['address']),
                              'city' => Cities::where('id', $member['city_id'])->value('name'),
+                             'city_id' => $member['city_id'],
                              'gender' => $member['gender'],
                              'mobile' => $member['mobile'],
-                             'date_of_birth' => $member['date_of_birth'],
+                             'date_of_birth' => date('d-m-Y',strtotime($member['date_of_birth'])),
                              'email' => $member['email'],
                              'blood_group' => BloodGroup::where('id', $member['blood_group_id'])->value('blood_group_type'),
+                             'blood_group_id' => $member['blood_group_id'],
                              'latitude' => $member['latitude'],
                              'longitude' => $member['longitude'],
                              'member_image_url' => env('SGKSWEB_BASEURL').env('MEMBER_IMAGE_UPLOAD').sha1($member['id']).DIRECTORY_SEPARATOR.$member['profile_image'],
@@ -97,11 +101,13 @@ trait MemberTrait{
                          'last_name' => ucwords($member['last_name']),
                          'address' => ucwords($member['address']),
                          'city' => Cities::where('id', $member['city_id'])->value('name'),
+                         'city_id' => $member['city_id'],
                          'gender' => $member['gender'],
                          'mobile' => $member['mobile'],
-                         'date_of_birth' => $member['date_of_birth'],
+                         'date_of_birth' => date('d-m-Y',strtotime($member['date_of_birth'])),
                          'email' => $member['email'],
                          'blood_group' => BloodGroup::where('id', $member['blood_group_id'])->value('blood_group_type'),
+                         'blood_group_id' => $member['blood_group_id'],
                          'latitude' => $member['latitude'],
                          'longitude' => $member['longitude'],
                          'member_image_url' => env('SGKSWEB_BASEURL').env('MEMBER_IMAGE_UPLOAD').sha1($member['id']).DIRECTORY_SEPARATOR.$member['profile_image'],
@@ -188,5 +194,65 @@ trait MemberTrait{
         return response()->json($response,$status);
     }
 
+    public function editMember(Request $request) {
+        try{
+            $data = $request->all();
+            $id = $data['member_id'];
+            $membersData['first_name'] = $data['first_name'];
+            $membersData['middle_name'] = $data['middle_name'];
+            $membersData['last_name'] = $data['last_name'];
+            if(array_key_exists('gender',$data)){
+                $membersData['gender'] = $data['gender'];
+            }
+            $membersData['address'] = $data['address'];
+            $membersData['date_of_birth'] = $data['date_of_birth'];
+            $membersData['blood_group_id'] = $data['blood_group_id'];
+            $membersData['mobile'] = $data['mobile'];
+            $membersData['email'] = $data['email'];
+            $membersData['city_id'] = $data['city_id'];
+            $membersData['longitude'] = null; // currently No functionality
+            $membersData['latitude'] = null;
+            Members::where('id',$id)->update($membersData);
 
+            if($request->has('profile_images') && $data['profile_images'] != ""){
+                $member = Members::where('id',$id)->first();
+                $createMemberDirectoryName = sha1($id);
+                $tempUploadFile = env('WEB_PUBLIC_PATH').env('MEMBER_TEMP_IMAGE_UPLOAD').$data['profile_images'];
+                if(File::exists($tempUploadFile)){
+                    $imageUploadNewPath = env('WEB_PUBLIC_PATH').env('MEMBER_IMAGE_UPLOAD').DIRECTORY_SEPARATOR.$createMemberDirectoryName;
+                    if($member['profile_image'] != null){
+                        unlink(env('WEB_PUBLIC_PATH').env('MEMBER_IMAGE_UPLOAD').DIRECTORY_SEPARATOR.$createMemberDirectoryName.DIRECTORY_SEPARATOR.$member['profile_image']);
+                    }
+                    if(!file_exists($imageUploadNewPath)) {
+                        File::makeDirectory($imageUploadNewPath, $mode = 0777, true, true);
+                    }
+                    $imageUploadNewPath .= DIRECTORY_SEPARATOR.$data['profile_images'];
+                    File::move($tempUploadFile,$imageUploadNewPath);
+                    $member->update([
+                        'profile_image' => $data['profile_images'],
+                    ]);
+                }
+            }
+            $message = "Member Updated Successfully";
+            $status = 200;
+            $response = [
+                'message' => $message,
+            ];
+            return response()->json($response,$status);
+
+        }catch(\Exception $exception){
+            $message = "Fail";
+            $status = 500;
+            $data = [
+                'action' => 'Update Member',
+                'exception' => $exception->getMessage(),
+                'params' => $request->all()
+            ];
+            Log::critical(json_encode($data));
+        }
+        $response = [
+            'message' => $message,
+        ];
+        return response()->json($response,$status);
+    }
 }

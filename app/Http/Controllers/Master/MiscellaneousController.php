@@ -15,7 +15,7 @@ class MiscellaneousController extends Controller
 {
     public function getBloodGroupMaster(Request $request) {
         try{
-            $data = BloodGroup::get(['id as blood_id','blood_group_type as blood_group'])->toArray();
+            $data = BloodGroup::orderBy('id','ASC')->get(['id as blood_id','blood_group_type as blood_group'])->toArray();
             $message = "Success";
             $status = 200;
         }catch(\Exception $e){
@@ -53,7 +53,9 @@ class MiscellaneousController extends Controller
             foreach ($cityresultData as $cityData) {
                 $memberCount = Members::where('city_id',$cityData['city_id'])
                                         ->get()->count();
-                if ($request->has('language_id')) {
+                $cityTranslationData = CityTranslations::where('city_id', $cityData['city_id'])
+                    ->get()->toArray();
+                if ($request->has('language_id') && $request->language_id == $cityTranslationData[0]['language_id']) {
                     $cityTranslationData = CityTranslations::where('language_id', $request->language_id)
                         ->where('city_id', $cityData['city_id'])
                         ->get()->toArray();
@@ -61,12 +63,14 @@ class MiscellaneousController extends Controller
                         $data[] = array(
                             'city_id' => $cityData['city_id'],
                             'city_name' => ($cityTranslationData[0]['name'] != null) ? $cityTranslationData[0]['name'] : $cityData['city_name'],
+                            'city_name_gj' => $cityTranslationData[0]['name'],
                             'city_member_count' => $memberCount,
                         );
                     } else {
                         $data[] = array(
                             'city_id' => $cityData['city_id'],
                             'city_name' => $cityData['city_name'],
+                            'city_name_gj' => $cityTranslationData[0]['name'],
                             'city_member_count' => $memberCount,
                         );
                     }
@@ -75,6 +79,7 @@ class MiscellaneousController extends Controller
                         $data[] = array(
                             'city_id' => $cityData['city_id'],
                             'city_name' => $cityData['city_name'],
+                            'city_name_gj' => $cityTranslationData[0]['name'],
                             'city_member_count' => $memberCount,
                     );
                 }
@@ -112,9 +117,9 @@ class MiscellaneousController extends Controller
             if (!file_exists($tempImageUploadPath)) {
                 File::makeDirectory($tempImageUploadPath, $mode = 0777, true, true);
             }
-	    $extension = $request['extension'];
-            $filename = mt_rand(1,10000000000).sha1(time()).".{$extension}";
-            file_put_contents($tempImageUploadPath.DIRECTORY_SEPARATOR.$filename,base64_decode($request['image']));
+	        $extension = $request['extension'];
+            $filename = mt_rand(1,10000000000).sha1(time()).".".$extension;
+            file_put_contents($tempImageUploadPath.DIRECTORY_SEPARATOR.$filename, base64_decode($request['image']));
             $message = "Success";
             $status = 200;
         }catch (\Exception $e){

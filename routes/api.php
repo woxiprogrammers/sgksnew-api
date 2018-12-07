@@ -23,6 +23,7 @@ Route::group(['prefix' => 'v1'], function() {
 	Route::group(['prefix' => 'sgks-member'], function() {
 		Route::post('listing', array('uses' => 'Master\MemberController@listing'));
         Route::post('add-member', array('uses' => 'Master\MemberController@addMember'));
+        Route::post('edit-member', array('uses' => 'Master\MemberController@editMember'));
 	});
 
 	Route::group(['prefix' => 'sgks-event'], function() {
@@ -56,6 +57,7 @@ Route::group(['prefix' => 'v1'], function() {
 
 		Route::post('addmetosgks', array('uses' => 'Master\WebviewController@addMeToSgks'));
 		Route::post('sgks-suggestion', array('uses' => 'Master\WebviewController@sgksSuggestion'));
+        Route::get('suggestion-category', array('uses' => 'Master\WebviewController@getSuggestionCategory'));
 		Route::get('sgks-version', array('uses' => 'Master\WebviewController@minimumSupportedVersion'));
 
 	});
