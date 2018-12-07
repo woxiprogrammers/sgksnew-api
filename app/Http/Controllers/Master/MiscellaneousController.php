@@ -62,7 +62,7 @@ class MiscellaneousController extends Controller
                     if (count($cityTranslationData) > 0) {
                         $data[] = array(
                             'city_id' => $cityData['city_id'],
-                            'city_name' =>  $cityData['city_name'],
+                            'city_name' => ($cityTranslationData[0]['name'] != null) ? $cityTranslationData[0]['name'] : $cityData['city_name'],
                             'city_name_gj' => $cityTranslationData[0]['name'],
                             'city_member_count' => $memberCount,
                         );
