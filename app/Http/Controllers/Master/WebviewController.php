@@ -304,6 +304,7 @@ class WebviewController extends Controller
 	public function sgksSuggestion(Request $request) {
     	try{
 			$data = $request->all();
+			$suggestionType = SuggestionType::where('slug',$request->suggestion_type)->value('slug');
 			$suggestionData['description'] = $data['suggestion_message'];
 			$suggestionData['city_id'] = $data['sgks_city'];
 			if($request->has('suggestion_cat') && $data['suggestion_cat'] != "") {
@@ -311,11 +312,9 @@ class WebviewController extends Controller
             } else {
                 $suggestionData['suggestion_category_id'] = SuggestionCategory::where('slug','other')->value('id');
             }
-            if($data['suggestion_type'] == true || $data['suggestion_type'] == "true") {
+            if($data['suggestion_type'] == $suggestionType ) {
                 $suggestionData['suggestion_type_id'] = SuggestionType::where('slug','suggestion')->value('id');
-            }
-            if($data['suggestion_type'] == false || $data['suggestion_type'] == "false")
-            {
+            } else {
                 $suggestionData['suggestion_type_id'] = SuggestionType::where('slug','complaint')->value('id');
             }
             Suggestion::create($suggestionData);
