@@ -20,6 +20,7 @@ trait MessageTrait{
             $png = '.png';
             if($request->has('sgks_city')){
                 $ids = Messages::where('city_id',$request->sgks_city)
+                    ->where('is_active',true)
                     ->pluck('id')->toArray();
             }
             $messageData = array();
@@ -27,6 +28,7 @@ trait MessageTrait{
             if (count($ids) > 0) {
                 $messageData = Messages::orderBy('id', 'desc')
                     ->whereIn('id', $ids)
+                    ->where('is_active',true)
                     ->skip($skip)->take($take)
                     ->get()->toArray(); //all city data
             }
