@@ -10,7 +10,7 @@ class OtpVerificationController extends Controller
 {
     public function getOtp(Request $request){
         try{
-            $mobile_no = $request['mobile_number'];
+            $mobile_no =  $request['mobile_number'];
             if($mobile_no == null){
                 $message = "Please Enter a Valid Mobile No.";
                 $status = 412;
