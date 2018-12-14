@@ -10,17 +10,16 @@ class OtpVerificationController extends Controller
 {
     public function getOtp(Request $request){
         try{
-            $mobile_no = $request['mobile_number'];
+            $mobile_no =  $request['mobile_number'];
             if($mobile_no == null){
                 $message = "Please Enter a Valid Mobile No.";
                 $status = 412;
             }else{
                 $otp = $this->generateOtp();
-                $apiKey = urlencode(env('SMS_KEY'));
-                $numbers = array($mobile_no);
-                $sender = urlencode('TXTLCL');
-                $sms = rawurlencode('Your OTP is '.$otp);
-                $numbers = implode(',', $numbers);
+                $apiKey = env('SMS_KEY');
+                $sender = 'SGKSIN';
+                $sms = "WELCOME to SGKKS, ".$otp." is OTP for SGKKS Member's mobile verification. Please do not share it with anyone.";
+                $numbers = $mobile_no;
                 // Prepare data for POST request
                 $data = array('apikey' => $apiKey, 'numbers' => $numbers, "sender" => $sender, "message" => $sms);
                 // Send the POST request with cURL
@@ -31,13 +30,17 @@ class OtpVerificationController extends Controller
                 $smsStatus = curl_exec($ch);
                 curl_close($ch);
                 $status = 200;
-                $message = "Sms sent successfully";
-                $otpGen = new Otp();
-                $otpGen['mobile_no'] = $mobile_no;
-                $otpGen['otp'] = $otp;
-                $otpGen->save();
+                if ($smsStatus['status'] == 'success') {
+                    $message = "Sms sent successfully";
+                    $otpGen = new Otp();
+                    $otpGen['mobile_no'] = $mobile_no;
+                    $otpGen['otp'] = $otp;
+                    $otpGen->save();
+                } else {
+                    $message = "Sms not sent successfully";
+                }
             }
-        }catch (\Exception $e){
+        } catch (\Exception $e){
             $message= "Fail";
             $status = 500;
             $data = [
