@@ -53,7 +53,7 @@ Route::group(['prefix' => 'v1'], function() {
 		Route::get('q-a/{sgks_city}/{language_id}', array('uses' => 'Master\WebviewController@qa'));
 		Route::get('contact-us/{sgks_city}/{language_id}', array('uses' => 'Master\WebviewController@contactUs'));
 
-		Route::get('master-list', array('uses' => 'Master\WebviewController@masterList'));
+		Route::post('master-list', array('uses' => 'Master\WebviewController@masterList'));
 
 		Route::post('addmetosgks', array('uses' => 'Master\WebviewController@addMeToSgks'));
 		Route::post('sgks-suggestion', array('uses' => 'Master\WebviewController@sgksSuggestion'));
