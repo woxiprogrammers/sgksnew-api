@@ -229,22 +229,21 @@ class WebviewController extends Controller
             $classCount = 0;
             $msgCount = 0;
 	        $buzz = array();
-            if($request->has('last_updated_date_message') && $request->has('city_id')){
+            if($request->has('last_updated_date_message') && $request->has('sgks_city')){
                 if($request->last_updated_date_message == '' || $request->last_updated_date_message == null){
-                    $messageIds = Messages::where('created_at','>=',$request->last_updated_date_message)
-                        ->where('city_id',$request->city_id)
+                    $messageIds = Messages::where('city_id',$request->sgks_city)
                         ->where('is_active',true)
                         ->pluck('id')->toArray();
                     $msgCount = count($messageIds);
                 } else {
                     $messageIds = Messages::where('created_at', '>=', $request->last_updated_date_message)
-                        ->where('city_id', $request->city_id)
+                        ->where('city_id', $request->sgks_city)
                         ->where('is_active', true)
                         ->pluck('id')->toArray();
                     $msgCount = count($messageIds);
                 }
                 $buzzId = MessageTypes::where('slug','buzz')->value('id');
-                $msgImage = Messages::where('city_id',$request->city_id)
+                $msgImage = Messages::where('city_id',$request->sgks_city)
                                     ->where('message_type_id',$buzzId)
                                     ->where('is_active',true)
                                     ->select('id','image_url')->first();
@@ -260,16 +259,15 @@ class WebviewController extends Controller
                     ];
                 }
             }
-            if($request->has('last_updated_date_classified') && $request->has('city_id')){
+            if($request->has('last_updated_date_classified') && $request->has('sgks_city')){
                 if($request->last_updated_date_classified == '' || $request->last_updated_date_classified ==null){
-                    $classifiedIds = Classifieds::where('created_at','>=',$request->last_updated_date_classified)
-                        ->where('city_id',$request->city_id)
+                    $classifiedIds = Classifieds::where('city_id',$request->sgks_city)
                         ->where('is_active',true)
                         ->pluck('id')->toArray();
                     $classCount = count($classifiedIds);
                 } else {
                     $classifiedIds = Classifieds::where('created_at', '>=', $request->last_updated_date_classified)
-                        ->where('city_id', $request->city_id)
+                        ->where('city_id', $request->sgks_city)
                         ->where('is_active', true)
                         ->pluck('id')->toArray();
                     $classCount = count($classifiedIds);
