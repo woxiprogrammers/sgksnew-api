@@ -6,6 +6,9 @@ use App\DrawerWebviewDetailsTranslations;
 use App\Suggestion;
 use App\SuggestionCategory;
 use App\SuggestionType;
+use App\Classifieds;
+use App\Messages;
+use App\MessageTypes;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\DrawerWebview;
@@ -222,41 +225,61 @@ class WebviewController extends Controller
 
     public function masterList(Request $request) {
 	    try{
-             $data['sgks_area'] = array(
-                        array(
-                       	'id' => 1,
-                       	'area_name' => 'Karvenagar'
-                       ),
-                       array(
-                       	'id' => 2,
-                       	'area_name' => 'Sangvi'
-                       )
-                   );
-
-             $data['suggestionbox_category'] = array(
-                       array(
-                       	'id' => 1,
-                       	'name' => 'Cultural'
-                       ),
-                       array(
-                       	'id' => 2,
-                       	'name' => 'Social'
-                       )
-                   );
-
-             $data['sgks_messages'] = array(
-                       1,2,3,4
-                      );
-
-             $data['sgks_buzz'] = array(
-                        "id" =>  1,
-    					"msg_img" => "http://sgksapi.woxi.co.in/uploads/userdata/family/no_image.png"
-                      );
-
-             $data['sgks_classified'] = array(
-                        1,2,3,4
-                      );
-
+	        $data = array();
+            $classCount = 0;
+            $msgCount = 0;
+	        $buzz = array();
+            if($request->has('last_updated_date_message') && $request->has('city_id')){
+                if($request->last_updated_date_message == '' || $request->last_updated_date_message == null){
+                    $messageIds = Messages::where('created_at','>=',$request->last_updated_date_message)
+                        ->where('city_id',$request->city_id)
+                        ->where('is_active',true)
+                        ->pluck('id')->toArray();
+                    $msgCount = count($messageIds);
+                } else {
+                    $messageIds = Messages::where('created_at', '>=', $request->last_updated_date_message)
+                        ->where('city_id', $request->city_id)
+                        ->where('is_active', true)
+                        ->pluck('id')->toArray();
+                    $msgCount = count($messageIds);
+                }
+                $buzzId = MessageTypes::where('slug','buzz')->value('id');
+                $msgImage = Messages::where('city_id',$request->city_id)
+                                    ->where('message_type_id',$buzzId)
+                                    ->where('is_active',true)
+                                    ->select('id','image_url')->first();
+                if($msgImage != null) {
+                    $buzz = [
+                        'id' => $msgImage['id'],
+                        'msg_img' => ($msgImage['image_url'] != null) ? env('SGKSWEB_BASEURL') . env('MESSAGE_IMAGES_UPLOAD') . DIRECTORY_SEPARATOR . sha1($msgImage['id']) . DIRECTORY_SEPARATOR . $msgImage['image_url'] : null,
+                    ];
+                } else {
+                    $buzz = [
+                        'id' => null,
+                        'msg_img' => null,
+                    ];
+                }
+            }
+            if($request->has('last_updated_date_classified') && $request->has('city_id')){
+                if($request->last_updated_date_classified == '' || $request->last_updated_date_classified ==null){
+                    $classifiedIds = Classifieds::where('created_at','>=',$request->last_updated_date_classified)
+                        ->where('city_id',$request->city_id)
+                        ->where('is_active',true)
+                        ->pluck('id')->toArray();
+                    $classCount = count($classifiedIds);
+                } else {
+                    $classifiedIds = Classifieds::where('created_at', '>=', $request->last_updated_date_classified)
+                        ->where('city_id', $request->city_id)
+                        ->where('is_active', true)
+                        ->pluck('id')->toArray();
+                    $classCount = count($classifiedIds);
+                }
+            }
+            $data[] = array(
+                'classified_count' => $classCount,
+                'message_count' => $msgCount,
+                'buzz' => $buzz,
+            );
             $message = "Success";
             $status = 200;
         }catch(\Exception $e){
