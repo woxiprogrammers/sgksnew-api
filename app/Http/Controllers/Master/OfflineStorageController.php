@@ -41,6 +41,7 @@ class OfflineStorageController extends Controller
             $accountEn = array();
             $committeeEn = array();
             $classifiedEn = array();
+            $cityEn = array();
             $committeeMembersEn = array();
             $messageEn = array();
             $accounts = array();
@@ -53,13 +54,24 @@ class OfflineStorageController extends Controller
             if($request->has('current_timestamp') && ($request->current_timestamp == null || $request->current_timestamp == '')) {
 
                 //City Data
-                $cityIds = Cities::where('is_active',true)->pluck('id')->toArray();
+                $citiesData = Cities::orderBy('id','ASC')->get()->toArray();
+                foreach ($citiesData as $city){
+                    $cityEn[] = array(
+                        'id' => $city['id'],
+                        'name' => $city['name'],
+                        'state_id' => $city['state_id'],
+                        'is_active' => $city['is_active'],
+                        'city_member_count' => Members::where('city_id',$city['id'])->get()->count(),
+                        'created_at' => $city['created_at'],
+                        'updated_at' => $city['updated_at'],
+                     );
+                }
                 $cities = array(
-                  'city_en' => Cities::where('is_active',true)->orderBy('id','ASC')->get()->toArray(),
-                  'city_gj' => CityTranslations::whereIn('city_id',$cityIds)->orderBy('id','ASC')->get()->toArray(),
+                  'city_en' => $cityEn,
+                  'city_gj' => CityTranslations::orderBy('id','ASC')->get()->toArray(),
                 );
                 //members data
-                $membersData = Members::where('is_active',true)->orderBy('id','ASC')->get()->toArray();
+                $membersData = Members::orderBy('id','ASC')->get()->toArray();
                 $memberGj = MemberTranslations::orderBy('id','ASC')->get()->toArray();
                 foreach ($membersData as $memberData) {
                     $memberEn[] = array(
@@ -90,7 +102,7 @@ class OfflineStorageController extends Controller
                 );
 
                 //Event Data
-                $eventsData = Events::where('is_active',true)->orderBy('id','ASC')->get()->toArray();
+                $eventsData = Events::orderBy('id','ASC')->get()->toArray();
                 $eventGj = EventsTranslations::orderBy('id','ASC')->get()->toArray();
                 foreach ($eventsData as $eventData){
                     $EventImgData = array();
@@ -124,7 +136,7 @@ class OfflineStorageController extends Controller
                 );
 
                 //Account Data
-                $accountsData = Accounts::where('is_active',true)->orderBy('id','ASC')->get()->toArray();
+                $accountsData = Accounts::orderBy('id','ASC')->get()->toArray();
                 $accountGj = AccountsTranslations::orderBy('id','ASC')->get()->toArray();
                 foreach ($accountsData as $accountData){
                     $AccountImgData = array();
@@ -156,7 +168,7 @@ class OfflineStorageController extends Controller
                 );
 
                 //committee Data
-                $committeesData = Committees::where('is_active',true)->orderBy('id','ASC')->get()->toArray();
+                $committeesData = Committees::orderBy('id','ASC')->get()->toArray();
                 $committeeGj = CommitteesTranslations::orderBy('id','ASC')->get()->toArray();
                 foreach ($committeesData as $committeeData){
                     $committeeMembersData = CommitteeMembers::where('committee_id',$committeeData['id'])->orderBy('id','ASC')->get()->toArray();
@@ -176,7 +188,7 @@ class OfflineStorageController extends Controller
                         );
                     }
 
-                    $memberIds = CommitteeMembers::where('is_active',true)->where('committee_id',$committeeData['id'])
+                    $memberIds = CommitteeMembers::where('committee_id',$committeeData['id'])
                         ->pluck('id')->toArray();
                     $committeeMembersDataGj = CommitteeMembersTranslations::whereIn('member_id', $memberIds)
                         ->orderBy('id','ASC')
@@ -215,7 +227,7 @@ class OfflineStorageController extends Controller
 
 
                 //Message Data
-                $messagesData = Messages::where('is_active',true)->orderBy('id','ASC')->get()->toArray();
+                $messagesData = Messages::orderBy('id','ASC')->get()->toArray();
                 $messageGj = MessageTranslations::orderBy('id','ASC')->get()->toArray();
                 foreach ($messagesData as $messageData){
                     $messageEn[] = array(
@@ -239,7 +251,7 @@ class OfflineStorageController extends Controller
                 );
 
                 //Classified Data
-                $classifiedsData = Classifieds::where('is_active',true)->orderBy('id','ASC')->get()->toArray();
+                $classifiedsData = Classifieds::orderBy('id','ASC')->get()->toArray();
                 $classifiedGj = ClassifiedsTranslations::orderBy('id','ASC')->get()->toArray();
                 foreach ($classifiedsData as $classifiedData){
                     $classifiedImgData = array();
@@ -273,15 +285,27 @@ class OfflineStorageController extends Controller
 
             } else {
                 //new city data
-                $cityIds = Cities::where('is_active',true)->where('updated_at','>=',$request->current_timestamp)->pluck('id')->toArray();
+                $citiesData = Cities::where('updated_at','>=',$request->current_timestamp)->orderBy('id','ASC')->get()->toArray();
+                foreach ($citiesData as $city){
+                    $cityEn[] = array(
+                        'id' => $city['id'],
+                        'name' => $city['name'],
+                        'state_id' => $city['state_id'],
+                        'is_active' => $city['is_active'],
+                        'city_member_count' => Members::where('city_id',$city['id'])->get()->count(),
+                        'created_at' => $city['created_at'],
+                        'updated_at' => $city['updated_at'],
+                    );
+                }
+                $cityIds = Cities::where('updated_at','>=',$request->current_timestamp)->pluck('id')->toArray();
                 $cities = array(
-                    'city_en' => Cities::where('is_active',true)->where('updated_at','>=',$request->current_timestamp)->orderBy('id','ASC')->get()->toArray(),
+                    'city_en' => $cityEn,
                     'city_gj' => CityTranslations::whereIn('city_id',$cityIds)->orWhere('updated_at','>=',$request->current_timestamp)->orderBy('id','ASC')->get()->toArray(),
                 );
 
 
                 // Member new Data
-                $membersData = Members::where('is_active',true)->where('updated_at','>=',$request->current_timestamp)
+                $membersData = Members::where('updated_at','>=',$request->current_timestamp)
                     ->orderBy('id','ASC')
                     ->get()->toArray();
                 $members = array();
@@ -308,7 +332,7 @@ class OfflineStorageController extends Controller
                         'updated_at' => $memberData['updated_at'],
                     );
                 }
-                $membersIds = Members::where('is_active',true)->where('updated_at','>=',$request->current_timestamp)
+                $membersIds = Members::where('updated_at','>=',$request->current_timestamp)
                     ->pluck('id')->toArray();
                 $memberGj = MemberTranslations::whereIn('member_id', $membersIds)
                     ->orWhere('updated_at','>=',$request->current_timestamp)
@@ -320,7 +344,7 @@ class OfflineStorageController extends Controller
                 );
 
                 //Events new data
-                $eventsData = Events::where('is_active',true)->where('updated_at','>=',$request->current_timestamp)
+                $eventsData = Events::where('updated_at','>=',$request->current_timestamp)
                     ->orderBy('id','ASC')
                     ->get()->toArray();
                 foreach ($eventsData as $eventData){
@@ -349,7 +373,7 @@ class OfflineStorageController extends Controller
                         'year' => date('Y',strtotime($eventData['start_date'])),
                     );
                 }
-                $eventsIds = Events::where('is_active',true)->where('updated_at','>=',$request->current_timestamp)
+                $eventsIds = Events::where('updated_at','>=',$request->current_timestamp)
                     ->pluck('id')->toArray();
                 $eventGj = EventsTranslations::whereIn('event_id', $eventsIds)
                     ->orWhere('updated_at','>=',$request->current_timestamp)
@@ -361,7 +385,7 @@ class OfflineStorageController extends Controller
                 );
 
                 //Account new data
-                $accountsData = Accounts::where('is_active',true)->where('updated_at','>=',$request->current_timestamp)
+                $accountsData = Accounts::where('updated_at','>=',$request->current_timestamp)
                     ->orderBy('id','ASC')
                     ->get()->toArray();
                 foreach ($accountsData as $accountData){
@@ -388,7 +412,7 @@ class OfflineStorageController extends Controller
                         'year' => date('Y',strtotime($accountData['created_at'])),
                     );
                 }
-                $accountIds = Accounts::where('is_active',true)->where('updated_at','>=',$request->current_timestamp)
+                $accountIds = Accounts::where('updated_at','>=',$request->current_timestamp)
                     ->pluck('id')->toArray();
                 $accountGj = AccountsTranslations::whereIn('account_id', $accountIds)
                     ->orWhere('updated_at','>=',$request->current_timestamp)
@@ -408,7 +432,7 @@ class OfflineStorageController extends Controller
                 $committeesIds = array_unique($rawCommitteesIds);
                 $committeesData = Committees::whereIn('id',$committeesIds)->get()->toArray();
                 foreach ($committeesData as $committeeData){
-                    $committeeMembersData = CommitteeMembers::where('is_active',true)->where('committee_id',$committeeData['id'])
+                    $committeeMembersData = CommitteeMembers::where('committee_id',$committeeData['id'])
                         ->Where('updated_at','>=',$request->current_timestamp)
                         ->orderBy('id','ASC')
                         ->get()->toArray();
@@ -427,7 +451,7 @@ class OfflineStorageController extends Controller
                             'updated_at' =>  $committeeMemberData['updated_at'],
                         );
                     }
-                    $memberIds = CommitteeMembers::where('is_active',true)->where('committee_id',$committeeData['id'])
+                    $memberIds = CommitteeMembers::where('committee_id',$committeeData['id'])
                         ->Where('updated_at','>=',$request->current_timestamp)
                         ->pluck('id')->toArray();
                     $committeeMembersDataGj = CommitteeMembersTranslations::whereIn('member_id', $memberIds)
@@ -461,7 +485,7 @@ class OfflineStorageController extends Controller
                         'members' => $committeeMembers,
                     );
                 }
-                $committeeIds = Committees::where('is_active',true)->where('updated_at','>=',$request->current_timestamp)
+                $committeeIds = Committees::where('updated_at','>=',$request->current_timestamp)
                     ->pluck('id')->toArray();
                 $committeeGj = CommitteesTranslations::whereIn('committee_id', $committeeIds)
                     ->orWhere('updated_at','>=',$request->current_timestamp)
@@ -473,7 +497,7 @@ class OfflineStorageController extends Controller
                 );
 
                 //new Message Data
-                $messagesData = Messages::where('is_active',true)->where('updated_at','>=',$request->current_timestamp)
+                $messagesData = Messages::where('updated_at','>=',$request->current_timestamp)
                     ->orderBy('id','ASC')
                     ->get()->toArray();
                 foreach ($messagesData as $messageData){
@@ -492,7 +516,7 @@ class OfflineStorageController extends Controller
                         'updated_at' =>  $messageData['updated_at'],
                     );
                 }
-                $messageIds = Messages::where('is_active',true)->where('updated_at','>=',$request->current_timestamp)
+                $messageIds = Messages::where('updated_at','>=',$request->current_timestamp)
                     ->pluck('id')->toArray();
                 $messageGj = MessageTranslations::whereIn('message_id', $messageIds)
                     ->orWhere('updated_at','>=',$request->current_timestamp)
@@ -504,7 +528,7 @@ class OfflineStorageController extends Controller
                 );
 
                 //new classified data
-                $classifiedsData = Classifieds::where('is_active',true)->where('updated_at','>=',$request->current_timestamp)
+                $classifiedsData = Classifieds::where('updated_at','>=',$request->current_timestamp)
                     ->orderBy('id','ASC')
                     ->get()->toArray();
                 foreach ($classifiedsData as $classifiedData){
@@ -532,7 +556,7 @@ class OfflineStorageController extends Controller
                         'updated_at' =>  $classifiedData['updated_at'],
                     );
                 }
-                $classifiedIds = Classifieds::where('is_active',true)->where('updated_at','>=',$request->current_timestamp)
+                $classifiedIds = Classifieds::where('updated_at','>=',$request->current_timestamp)
                     ->pluck('id')->toArray();
                 $classifiedGj = ClassifiedsTranslations::whereIn('classified_id', $classifiedIds)
                     ->orWhere('updated_at','>=',$request->current_timestamp)
