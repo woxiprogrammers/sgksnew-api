@@ -69,6 +69,7 @@ trait CommitteeTrait{
                  }
                  $memData = array();
                  $committeeMemberData = CommitteeMembers::where('committee_id', $committee['id'])
+                     ->where('is_active',true)
                      ->orderBy('id', 'ASC')
                      ->get()->toArray();
                  foreach ($committeeMemberData as $committeMember) {

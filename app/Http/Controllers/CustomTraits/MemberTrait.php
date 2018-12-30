@@ -52,10 +52,10 @@ trait MemberTrait{
                      if (count($memDataInOtherLang) > 0) {
                          $data[] = array(
                              'id' => $member['id'],
-                             'first_name' => $memDataInOtherLang[0]['first_name'],
-                             'middle_name' => $memDataInOtherLang[0]['middle_name'],
-                             'last_name' => $memDataInOtherLang[0]['last_name'],
-                             'address' => $memDataInOtherLang[0]['address'],
+                             'first_name' => ($memDataInOtherLang[0]['first_name'] != null) ? $memDataInOtherLang[0]['first_name'] : ucwords($member['first_name']),
+                             'middle_name' => ($memDataInOtherLang[0]['middle_name'] != null) ? $memDataInOtherLang[0]['middle_name'] : ucwords($member['middle_name']),
+                             'last_name' => ($memDataInOtherLang[0]['last_name'] != null) ? $memDataInOtherLang[0]['last_name'] : ucwords($member['last_name']),
+                             'address' => ($memDataInOtherLang[0]['address'] != null) ? $memDataInOtherLang[0]['address'] : ucwords($member['address']),
                              'city' => Cities::where('id', $member['city_id'])->value('name'),
                              'city_id' => $member['city_id'],
                              'gender' => $member['gender'],
