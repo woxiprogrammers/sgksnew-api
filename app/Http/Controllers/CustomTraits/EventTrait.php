@@ -22,7 +22,7 @@ trait EventTrait{
                  $year = date("Y");
              }
 
-             $ids = Events::whereYear('created_at', '=', $year)->pluck('id')->toArray();
+             $ids = Events::whereYear('created_at', '=', $year)->where('is_active',true)->pluck('id')->toArray();
 
              if($request->has('sgks_city')){
                  $ids = Events::where('city_id',$request->sgks_city)

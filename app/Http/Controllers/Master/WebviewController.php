@@ -224,11 +224,11 @@ class WebviewController extends Controller
     }
 
     public function masterList(Request $request) {
-	    try{
-	        $data = array();
+        try{
+            $data = array();
             $classCount = 0;
             $msgCount = 0;
-	        $buzz = array();
+            $buzz = array();
             if($request->has('last_updated_date_message') && $request->has('sgks_city')){
                 if($request->last_updated_date_message == '' || $request->last_updated_date_message == null){
                     $messageIds = Messages::where('city_id',$request->sgks_city)
@@ -244,9 +244,9 @@ class WebviewController extends Controller
                 }
                 $buzzId = MessageTypes::where('slug','buzz')->value('id');
                 $msgImage = Messages::where('city_id',$request->sgks_city)
-                                    ->where('message_type_id',$buzzId)
-                                    ->where('is_active',true)
-                                    ->select('id','image_url')->first();
+                    ->where('message_type_id',$buzzId)
+                    ->where('is_active',true)
+                    ->select('id','image_url')->first();
                 if($msgImage != null) {
                     $buzz = [
                         'id' => $msgImage['id'],

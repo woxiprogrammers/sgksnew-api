@@ -21,7 +21,7 @@ trait AccountTrait{
                  $year = date("Y");
              }
 
-             $ids = Accounts::whereYear('created_at', '=', $year)->pluck('id')->toArray();
+             $ids = Accounts::whereYear('created_at', '=', $year)->where('is_active',true)->pluck('id')->toArray();
 
              if($request->has('sgks_city')){
                  $ids = Accounts::where('city_id',$request->sgks_city)
@@ -48,7 +48,8 @@ trait AccountTrait{
                              'description' => ($accountTranslationData[0]['description']) ? $accountTranslationData[0]['description'] : $account['description'],
                              'city_name' => Cities::where('id',$account['city_id'])->value('name'),
                              'created_at' => $account['created_at'],
-                             'updated_at' => $account['updated_at']
+                             'updated_at' => $account['updated_at'],
+                             'year' => date('Y',strtotime($account['created_at'])),
                          );
                      } else {
                          $data[] = array(
@@ -57,7 +58,8 @@ trait AccountTrait{
                              'description' => $account['description'],
                              'city_name' => Cities::where('id',$account['city_id'])->value('name'),
                              'created_at' => $account['created_at'],
-                             'updated_at' => $account['updated_at']
+                             'updated_at' => $account['updated_at'],
+                             'year' => date('Y',strtotime($account['created_at'])),
                          );
                      }
                  } else {
@@ -67,7 +69,8 @@ trait AccountTrait{
                          'description' => $account['description'],
                          'city_name' => Cities::where('id',$account['city_id'])->value('name'),
                          'created_at' => $account['created_at'],
-                         'updated_at' => $account['updated_at']
+                         'updated_at' => $account['updated_at'],
+                         'year' => date('Y',strtotime($account['created_at'])),
                      );
                  }
                  $AccountImgData = array();
