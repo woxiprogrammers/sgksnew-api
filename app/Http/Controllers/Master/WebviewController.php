@@ -227,7 +227,7 @@ class WebviewController extends Controller
         try{
             $data = array();
             $buzz = array();
-            if($request->has('last_updated') && $request->has('sgks_city')){
+            if($request->has('last_updated') && $request->has('sgks_city') && $request->last_updated != null){
                 $buzzId = MessageTypes::where('slug','buzz')->value('id');
                 $msgImage = Messages::where('city_id',$request->sgks_city)
                     ->where('updated_at','>=',$request->last_updated)
