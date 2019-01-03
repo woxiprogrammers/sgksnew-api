@@ -56,7 +56,6 @@ class OtpVerificationController extends Controller
         }
         $response = [
             'message' => $message,
-            'exception' =>$data,
         ];
         return response()->json($response,$status);
     }
