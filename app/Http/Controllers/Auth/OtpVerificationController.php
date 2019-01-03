@@ -14,7 +14,7 @@ class OtpVerificationController extends Controller
             if($mobile_no == null){
                 $message = "Please Enter a Valid Mobile No.";
                 $status = 412;
-            }else{
+            } else {
                 $otp = $this->generateOtp();
                 $apiKey = env('SMS_KEY');
                 $sender = 'SGKSIN';
@@ -30,7 +30,11 @@ class OtpVerificationController extends Controller
                 $smsStatus = curl_exec($ch);
                 curl_close($ch);
                 $status = 200;
-                if ($smsStatus['status'] == 'success') {
+                $msgStatus = explode('"',$smsStatus);
+                if ($msgStatus[19] == 'failure'){
+                    $message = "Sms not sent successfully";
+                }
+                else if ($msgStatus[39] == 'success') {
                     $message = "Sms sent successfully";
                     $otpGen = new Otp();
                     $otpGen['mobile_no'] = $mobile_no;
@@ -52,6 +56,7 @@ class OtpVerificationController extends Controller
         }
         $response = [
             'message' => $message,
+            'exception' =>$data,
         ];
         return response()->json($response,$status);
     }
