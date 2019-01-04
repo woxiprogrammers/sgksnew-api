@@ -19,17 +19,12 @@ trait ClassifiedTrait{
              $skip = $page_id * $take;
              $data = array();
              $ids = array();
-
+             $classifiedData = array();
              if($request->has('sgks_city')){
                  $ids = Classifieds::where('city_id',$request->sgks_city)
                      ->pluck('id')->toArray();
              }
-             if (count($ids) < 1) {
-                 $classifiedData = Classifieds::orderBy('id', 'desc')
-                     ->where('is_active', true)
-                     ->skip($skip)->take($take)
-                     ->get()->toArray(); //all city data
-             } else {
+             if (count($ids) > 0) {
                  $classifiedData = Classifieds::orderBy('id', 'desc')
                      ->whereIn('id', $ids)
                      ->where('is_active', true)

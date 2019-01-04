@@ -42,9 +42,11 @@ class MiscellaneousController extends Controller
             if($cityName != null){
                 $cityresultData = Cities::where('is_active', true)
                       ->where('name','ilike',"%".$cityName."%")
+                      ->orderBy('name','asc')
                       ->get(['id as city_id', 'name as city_name'])->toArray();
             } else {
                 $cityresultData = Cities::where('is_active', true)
+                    ->orderBy('name','asc')
                     ->get(['id as city_id', 'name as city_name'])
                     ->toArray();
             }

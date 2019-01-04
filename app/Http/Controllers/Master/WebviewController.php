@@ -245,10 +245,28 @@ class WebviewController extends Controller
                         'msg_img' => null,
                     ];
                 }
+            } else {
+                $buzzId = MessageTypes::where('slug','buzz')->value('id');
+                $msgImage = Messages::where('city_id',$request->sgks_city)
+                    ->where('message_type_id',$buzzId)
+                    ->where('is_active',true)
+                    ->select('id','image_url')->first();
+                if($msgImage != null) {
+                    $buzz = [
+                        'id' => $msgImage['id'],
+                        'msg_img' => ($msgImage['image_url'] != null) ? env('SGKSWEB_BASEURL') . env('MESSAGE_IMAGES_UPLOAD') . DIRECTORY_SEPARATOR . sha1($msgImage['id']) . DIRECTORY_SEPARATOR . $msgImage['image_url'] : null,
+                    ];
+                } else {
+                    $buzz = [
+                        'id' => null,
+                        'msg_img' => null,
+                    ];
+                }
             }
 
             $data[] = array(
                 'buzz' => $buzz,
+                'is_add_edit_member_enable' => env('IS_ADD_EDIT_MEMBER_ENABLE')
             );
             $message = "Success";
             $status = 200;
