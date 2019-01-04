@@ -61,7 +61,7 @@ class OfflineStorageController extends Controller
                         'name' => $city['name'],
                         'state_id' => $city['state_id'],
                         'is_active' => $city['is_active'],
-                        'city_member_count' => Members::where('city_id',$city['id'])->get()->count(),
+                        'city_member_count' => Members::where('city_id',$city['id'])->where('is_active',true)->get()->count(),
                         'created_at' => $city['created_at'],
                         'updated_at' => $city['updated_at'],
                      );
@@ -292,7 +292,7 @@ class OfflineStorageController extends Controller
                         'name' => $city['name'],
                         'state_id' => $city['state_id'],
                         'is_active' => $city['is_active'],
-                        'city_member_count' => Members::where('city_id',$city['id'])->get()->count(),
+                        'city_member_count' => Members::where('city_id',$city['id'])->where('is_active',true)->get()->count(),
                         'created_at' => $city['created_at'],
                         'updated_at' => $city['updated_at'],
                     );

@@ -249,6 +249,7 @@ class WebviewController extends Controller
 
             $data[] = array(
                 'buzz' => $buzz,
+                'is_add_edit_member_enable' => env('IS_ADD_EDIT_MEMBER_ENABLE')
             );
             $message = "Success";
             $status = 200;
